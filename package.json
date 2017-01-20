@@ -1,0 +1,24 @@
+{
+  "name": "inverted-index",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/inverted-index.js",
+  "scripts": {
+    "start": "node src/inverted-index.js",
+    "test": "jasmine jasmine/spec/inverted-index-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gottsohn/inverted-index.git"
+  },
+  "author": "Ugonna Thelma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gottsohn/inverted-index/issues"
+  },
+  "homepage": "https://github.com/gottsohn/inverted-index#readme",
+  "devDependencies": {
+    "express": "^4.14.0",
+    "gulp-connect": "^5.0.0"
+  }
+}

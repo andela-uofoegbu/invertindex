@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+</head>
+
+<body ng-app="myApp">
+  <div class="main" ng-controller="MainController">
+    <div class="col-md-1"></div>
+    <div class="indexer-container col-md-10">
+      <div class="col-md-4 sidebar" id="sidebar">
+        <div class="title">
+          <h1>B-Index 1.0</h1>
+        </div>
+        <hr>
+        <div class="sidebarText">
+          <input type="file" id="fileInput" onchange="readFiles()" multiple>
+<div id="fileDisplayArea">
+
+</div>
+</div>
+<button class="btn resetBtn" onclick="IndexObj.createIndex()">Create Index</button>
+<button class="btn resetBtn" onclick="IndexObj.reset()">Reset Files</button>
+</div>
+<div class="col-md-8 index-frame-container">
+  <input type="text" name="query" id="query" maxlength="50" placeholder="Search Index">
+  <input id="searchBtn" type="submit" value="Find" class="btn" onclick="IndexObj.searchIndex(document.getElementById('query').value)">
+  <div id="index-frame">
+    <legend>
+      <h2>Index</h2>
+    </legend>
+    <div id="indexTableDiv">
+    </div>
+  </div>
+</div>
+</div>
+<div class="col-md-1"></div>
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="src/inverted-index.js"></script>
+<script src="src/app.js"></script>
+
+<script>
+$(document).ready(function(){
+
+
+});
+</script>
+</body>
+
+</html>
