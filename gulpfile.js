@@ -1,47 +1,23 @@
-var gulp = require('gulp');
-var browserify = require('gulp-browserify');
-var concat = require('gulp-concat');
-var refresh = require('gulp-livereload');
+let gulp = require('gulp');
+let browserSync = require('browser-sync').create();
+let sass = require('gulp-sass');
+let reload = browserSync.reload;
 
-gulp.task('scripts', function() {
-    gulp.src(['app/src/**/*.js'])
-        .pipe(browserify())
-        .pipe(refresh(server))
-})
+gulp.task('serve', ['sass'], () => {
+  browserSync.init({
+    server: "./"
+  });
 
-gulp.task('styles', function() {
-    gulp.src(['app/css/style.less'])
-        .pipe(less())
-        .pipe(minifyCSS())
-        .pipe(gulp.dest('dist/build'))
-        .pipe(refresh(server))
-})
+  gulp.watch("css/*.css", ['sass']);
+  gulp.watch(["index.html", "src/*.js"]).on('change', reload);
+});
 
-gulp.task('lr-server', function() {
-    server.listen(3000, function(err) {
-        if(err) return console.log(err);
-    });
-})
+// Compile sass into CSS & auto-inject into browsers
+gulp.task('sass', () => {
+  return gulp.src("css/*.css")
+        .pipe(sass())
+        .pipe(gulp.dest("css"))
+        .pipe(reload({stream: true}));
+});
 
-gulp.task('html', function() {
-    gulp.src("app/*.html")
-        .pipe(embedlr())
-        .pipe(gulp.dest('dist/'))
-        .pipe(refresh(server));
-})
-
-gulp.task('default', function() {
-    gulp.run('lr-server', 'scripts', 'styles', 'html');
-
-    gulp.watch('app/src/**', function(event) {
-        gulp.run('scripts');
-    })
-
-    gulp.watch('app/css/**', function(event) {
-        gulp.run('styles');
-    })
-
-    gulp.watch('app/**/*.html', function(event) {
-        gulp.run('html');
-    })
-})
+gulp.task('default', ['serve']);

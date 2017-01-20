@@ -76,10 +76,7 @@ function Index() {
 		return result;
 	};
 
-	this.reset = () => {
-		location.reload();
 
-	}
 
 }
 

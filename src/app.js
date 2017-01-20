@@ -9,6 +9,16 @@ var fileUploadedLists = {};
 var IndexObj = new Index();
 // console.log(new Index());
 //watch for change on the
+
+function isValidJsonObject(file){
+  if(file.type == 'application/json'){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 function readFiles() {
 
   var fileInput = document.getElementById('fileInput');
@@ -58,7 +68,7 @@ function readFiles() {
       document.getElementById('fileDisplayArea').innerHTML +=errors
     };
 
-    if (!fileUploadedLists[f.name] && f.type == 'application/json') {
+    if (!fileUploadedLists[f.name] && isValidJsonObject(f)) {
       console.log(f);
       reader.readAsText(f);
       fileUploadedLists[f.name] = true;
@@ -71,8 +81,6 @@ function readFiles() {
   }
 document.getElementById('fileDisplayArea').innerHTML +=errors
   document.getElementById('fileDisplayArea').innerHTML = '<ul>' + output.join('') + '</ul>';
-
-
 }
 
 
@@ -110,9 +118,9 @@ function createIndex() {
         var td = "<td>";
         var whereWordsExist = indices[keys[index]];
         if (whereWordsExist.includes(i)) {
-          td += "&#10004;";
+          td += "<span class='tick'>&#10004;</span>";
         } else {
-          td += "&#10006;";
+          td += "<span class='crossout'>&#10006;</span>";
         }
         td += "</td>";
         row += td;
@@ -126,6 +134,9 @@ function createIndex() {
   }
 
 function searchIndex (terms) {
+  if(terms==""){
+    return;
+  }
   	document.getElementById('indexTableDiv').innerHTML = "";
   var searchResult = IndexObj.searchIndex(terms);
   let books = IndexObj.allBooks;
@@ -145,9 +156,9 @@ function searchIndex (terms) {
 				let td = "<td>";
 				let whereWordsExist = IndexObj.indexObject[keys[index]];
 				if (whereWordsExist.includes(i)) {
-					td += "&#10004;";
+					td += "<span class='tick'>&#10004;</span>";
 				} else {
-					td += "&#10006;";
+					td += "<span class='crossout'>&#10006;</span>";
 				}
 				td += "</td>";
 				row += td;
