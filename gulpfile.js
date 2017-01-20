@@ -1,39 +1,47 @@
-const gulp = require('gulp'),
-  connect = require('gulp-connect'),
-  browse
+var gulp = require('gulp');
+var browserify = require('gulp-browserify');
+var concat = require('gulp-concat');
+var refresh = require('gulp-livereload');
 
-const paths = {
-  jsFiles: ['./src/inverted-index.js'],
-  htmlFiles: '*.html',
-  cssFiles: 'public/css/*.css',
-  scriptFiles: 'public/js/*.js',
-};
+gulp.task('scripts', function() {
+    gulp.src(['app/src/**/*.js'])
+        .pipe(browserify())
+        .pipe(refresh(server))
+})
 
-// serve
-gulp.task('server', () => {
-  const options = {
-    root: './',
-    livereload: true,
-    port: process.env.PORT || 3000
-  };
+gulp.task('styles', function() {
+    gulp.src(['app/css/style.less'])
+        .pipe(less())
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('dist/build'))
+        .pipe(refresh(server))
+})
 
-  connect.server(options);
-});
+gulp.task('lr-server', function() {
+    server.listen(3000, function(err) {
+        if(err) return console.log(err);
+    });
+})
 
-// reload
-gulp.task('reloadServer', () => {
-  gulp.src(['*.html', 'css/*.css', 'src/*.js'])
-    .pipe(connect.reload());
-});
+gulp.task('html', function() {
+    gulp.src("app/*.html")
+        .pipe(embedlr())
+        .pipe(gulp.dest('dist/'))
+        .pipe(refresh(server));
+})
 
-// test
-gulp.task('test', () => {
-  spawn('node_modules/karma/bin/karma', ['start', '--single-run'], {
-    stdio: 'inherit'
-  }).on('close', process.exit);
-});
+gulp.task('default', function() {
+    gulp.run('lr-server', 'scripts', 'styles', 'html');
 
+    gulp.watch('app/src/**', function(event) {
+        gulp.run('scripts');
+    })
 
+    gulp.watch('app/css/**', function(event) {
+        gulp.run('styles');
+    })
 
-
-gulp.task('default', ['reloadServer', 'server']);
+    gulp.watch('app/**/*.html', function(event) {
+        gulp.run('html');
+    })
+})

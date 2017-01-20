@@ -1,3 +1,6 @@
+
+
+
 let duplicateFound;
 
 var output = [];
@@ -43,7 +46,7 @@ function readFiles() {
       }
       else {
 
-        if (!isEmpty(contents)) {
+        if (!isEmpty(contents)&& contents.text) {
           contents.index = x;
           contents.prettyIndex = x + 1;
           IndexObj.allBooks.push(contents);
@@ -52,8 +55,7 @@ function readFiles() {
           errors.push("File " + filename + " is empty");
         }
       }
-      console.log(IndexObj.allBooks);
-      console.log(errors);
+      document.getElementById('fileDisplayArea').innerHTML +=errors
     };
 
     if (!fileUploadedLists[f.name] && f.type == 'application/json') {
@@ -64,10 +66,10 @@ function readFiles() {
     }
     else {
       errors.push("File " + f.name + " is not a valid json file");
-      console.log(errors);
+
     }
   }
-
+document.getElementById('fileDisplayArea').innerHTML +=errors
   document.getElementById('fileDisplayArea').innerHTML = '<ul>' + output.join('') + '</ul>';
 
 
@@ -77,7 +79,6 @@ function readFiles() {
 
 //Remove Duplicate words from Index
 
-
 //Check if JSON object is empty
 function isEmpty(obj) {
   for (var key in obj) {
@@ -86,4 +87,79 @@ function isEmpty(obj) {
   }
   return true;
 }
+
+
+function createIndex() {
+    document.getElementById('indexTableDiv').innerHTML = "";
+    IndexObj.createIndex();
+    var indices = IndexObj.getIndex();
+    var keys = Object.keys(indices);
+    var books = IndexObj.allBooks;
+    var container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
+    var table = $('#indexTable');
+    var tableHeader = '<thead><th>Words</th>';
+    for (var index in books) {
+      tableHeader += '<th>Book ' + ++index + "</th>";
+    }
+    tableHeader += "</thead><tbody>";
+    table.append(tableHeader);
+    for (var index in keys) {
+      var row = "<tr>";
+      row += '<td>' + keys[index] + '</td>';
+      for (var i = 0; i < books.length; i++) {
+        var td = "<td>";
+        var whereWordsExist = indices[keys[index]];
+        if (whereWordsExist.includes(i)) {
+          td += "&#10004;";
+        } else {
+          td += "&#10006;";
+        }
+        td += "</td>";
+        row += td;
+      }
+
+      row += "</tr>";
+
+      table.append(row);
+    }
+    table.append("</tbody>");
+  }
+
+function searchIndex (terms) {
+  	document.getElementById('indexTableDiv').innerHTML = "";
+  var searchResult = IndexObj.searchIndex(terms);
+  let books = IndexObj.allBooks;
+		let keys = Object.keys(searchResult);
+		let container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
+		let table = $('#indexTable');
+		let tableHeader = '<thead><th>Words</th>';
+		for (let index in books) {
+			tableHeader += '<th>Book ' + ++index + "</th>";
+		}
+		tableHeader += "</thead><tbody>";
+		table.append(tableHeader);
+		for (let index in keys) {
+			let row = "<tr>";
+			row += '<td>' + keys[index] + '</td>';
+			for (let i = 0; i < books.length; i++) {
+				let td = "<td>";
+				let whereWordsExist = IndexObj.indexObject[keys[index]];
+				if (whereWordsExist.includes(i)) {
+					td += "&#10004;";
+				} else {
+					td += "&#10006;";
+				}
+				td += "</td>";
+				row += td;
+			}
+
+			row += "</tr>";
+
+			table.append(row);
+		}
+		table.append("</tbody>");
+
+
+	};
+
 
