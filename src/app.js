@@ -10,11 +10,11 @@ var IndexObj = new Index();
 // console.log(new Index());
 //watch for change on the
 
-function isValidJsonObject(file){
-  if(file.type == 'application/json'){
+function isValidJsonObject(file) {
+  if (file.type == 'application/json') {
     return true;
   }
-  else{
+  else {
     return false;
   }
 }
@@ -56,7 +56,7 @@ function readFiles() {
       }
       else {
 
-        if (!isEmpty(contents)&& contents.text) {
+        if (!isEmpty(contents) && contents.text) {
           contents.index = x;
           contents.prettyIndex = x + 1;
           IndexObj.allBooks.push(contents);
@@ -65,7 +65,7 @@ function readFiles() {
           errors.push("File " + filename + " is empty");
         }
       }
-      document.getElementById('fileDisplayArea').innerHTML +=errors
+      document.getElementById('fileDisplayArea').innerHTML += errors
     };
 
     if (!fileUploadedLists[f.name] && isValidJsonObject(f)) {
@@ -79,7 +79,7 @@ function readFiles() {
 
     }
   }
-document.getElementById('fileDisplayArea').innerHTML +=errors
+  document.getElementById('fileDisplayArea').innerHTML += errors
   document.getElementById('fileDisplayArea').innerHTML = '<ul>' + output.join('') + '</ul>';
 }
 
@@ -98,79 +98,79 @@ function isEmpty(obj) {
 
 
 function createIndex() {
-    document.getElementById('indexTableDiv').innerHTML = "";
-    IndexObj.createIndex();
-    var indices = IndexObj.getIndex();
-    var keys = Object.keys(indices);
-    var books = IndexObj.allBooks;
-    var container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
-    var table = $('#indexTable');
-    var tableHeader = '<thead><th>Words</th>';
-    for (var index in books) {
-      tableHeader += '<th>Book ' + ++index + "</th>";
-    }
-    tableHeader += "</thead><tbody>";
-    table.append(tableHeader);
-    for (var index in keys) {
-      var row = "<tr>";
-      row += '<td>' + keys[index] + '</td>';
-      for (var i = 0; i < books.length; i++) {
-        var td = "<td>";
-        var whereWordsExist = indices[keys[index]];
-        if (whereWordsExist.includes(i)) {
-          td += "<span class='tick'>&#10004;</span>";
-        } else {
-          td += "<span class='crossout'>&#10006;</span>";
-        }
-        td += "</td>";
-        row += td;
-      }
-
-      row += "</tr>";
-
-      table.append(row);
-    }
-    table.append("</tbody>");
+  document.getElementById('indexTableDiv').innerHTML = "";
+  IndexObj.createIndex();
+  var indices = IndexObj.getIndex();
+  var keys = Object.keys(indices);
+  var books = IndexObj.allBooks;
+  var container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
+  var table = $('#indexTable');
+  var tableHeader = '<thead><th>Words</th>';
+  for (var index in books) {
+    tableHeader += '<th>' + books[index].title.substring(0, 20); + "</th>";
   }
+  tableHeader += "</thead><tbody>";
+  table.append(tableHeader);
+  for (var index in keys) {
+    var row = "<tr>";
+    row += '<td>' + keys[index] + '</td>';
+    for (var i = 0; i < books.length; i++) {
+      var td = "<td>";
+      var whereWordsExist = indices[keys[index]];
+      if (whereWordsExist.includes(i)) {
+        td += "<span class='tick'>&#10004;</span>";
+      } else {
+        td += "<span class='crossout'>&#10006;</span>";
+      }
+      td += "</td>";
+      row += td;
+    }
 
-function searchIndex (terms) {
-  if(terms==""){
+    row += "</tr>";
+
+    table.append(row);
+  }
+  table.append("</tbody>");
+}
+
+function searchIndex(terms) {
+  if (terms == "") {
     return;
   }
-  	document.getElementById('indexTableDiv').innerHTML = "";
+  document.getElementById('indexTableDiv').innerHTML = "";
   var searchResult = IndexObj.searchIndex(terms);
   let books = IndexObj.allBooks;
-		let keys = Object.keys(searchResult);
-		let container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
-		let table = $('#indexTable');
-		let tableHeader = '<thead><th>Words</th>';
-		for (let index in books) {
-			tableHeader += '<th>Book ' + ++index + "</th>";
-		}
-		tableHeader += "</thead><tbody>";
-		table.append(tableHeader);
-		for (let index in keys) {
-			let row = "<tr>";
-			row += '<td>' + keys[index] + '</td>';
-			for (let i = 0; i < books.length; i++) {
-				let td = "<td>";
-				let whereWordsExist = IndexObj.indexObject[keys[index]];
-				if (whereWordsExist.includes(i)) {
-					td += "<span class='tick'>&#10004;</span>";
-				} else {
-					td += "<span class='crossout'>&#10006;</span>";
-				}
-				td += "</td>";
-				row += td;
-			}
+  let keys = Object.keys(searchResult);
+  let container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
+  let table = $('#indexTable');
+  let tableHeader = '<thead><th>Words</th>';
+  for (let index in books) {
+    tableHeader += '<th>' + books[index].title.substring(0, 20); + '</th>';
+  }
+  tableHeader += "</thead><tbody>";
+  table.append(tableHeader);
+  for (let index in keys) {
+    let row = "<tr>";
+    row += '<td>' + keys[index] + '</td>';
+    for (let i = 0; i < books.length; i++) {
+      let td = "<td>";
+      let whereWordsExist = IndexObj.indexObject[keys[index]];
+      if (whereWordsExist.includes(i)) {
+        td += "<span class='tick'>&#10004;</span>";
+      } else {
+        td += "<span class='crossout'>&#10006;</span>";
+      }
+      td += "</td>";
+      row += td;
+    }
 
-			row += "</tr>";
+    row += "</tr>";
 
-			table.append(row);
-		}
-		table.append("</tbody>");
+    table.append(row);
+  }
+  table.append("</tbody>");
 
 
-	};
+};
 
 
