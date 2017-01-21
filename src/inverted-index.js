@@ -1,35 +1,29 @@
-/*jshint esversion: 6 */
-"use strict";
 
 //Index Object
 function Index() {
 	let wordlist = "";
-	this.allBooks = [];
+	this.allBooks = []; //array to store all uploaded books
 	this.indexObject = {};
 	let books = this.allBooks;
-	// this.searchResults = {};
-	// let indexObject = this.indexObject;
-
 
 	// Function to create list of all unique words in JSON file
 	this.createIndex = () => {
 		if (books.length > 0) {
+			wordlist = deleteDuplicate().sort();
+			wordlist.shift(); // to eliminate first empty array object
 
-				wordlist = deleteDuplicate().sort();
-				wordlist.shift();
-
-				for (let i = 0; i < wordlist.length; i++) {
-					for (let j = 0; j < books.length; j++) {
-						var re = new RegExp(wordlist[i], 'i');
-						if(re.test(books[j].text)) {
-							if(this.indexObject[wordlist[i]]) {
-								this.indexObject[wordlist[i]].push(j);
-							} else {
-								this.indexObject[wordlist[i]] = [j]
-							}
+			for (let i = 0; i < wordlist.length; i++) {
+				for (let j = 0; j < books.length; j++) {
+					var re = new RegExp(wordlist[i], 'i');
+					if (re.test(books[j].text)) {
+						if (this.indexObject[wordlist[i]]) {
+							this.indexObject[wordlist[i]].push(j);
+						} else {
+							this.indexObject[wordlist[i]] = [j]
 						}
 					}
 				}
+			}
 		}
 	}
 
@@ -37,6 +31,7 @@ function Index() {
 		return data.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/g, " ").replace(/\s+/g, ' ').toLowerCase();
 	};
 
+// Function to concatenate all books text, remove punctuation and extra spaces, split into array and delete duplicate
 	function deleteDuplicate() {
 		var bookString = "";
 		for (let i = 0; i < books.length; i++) {
@@ -44,14 +39,9 @@ function Index() {
 		}
 
 		bookString = removePunctuation(bookString).split(" ");
-		// for (var i = 0; i < books.length; i++) {
-		// 	if (bookString[i]==' ') {
-		// 		bookString.splice(i, 1);
-		// 	}
-		// }
 
 		return bookString.filter((item, index, arr) => {
-			return arr.indexOf(item) == index;
+			return arr.indexOf(item) == index; //test to check for duplicate. If Index of current object is equals to index
 		});
 	}
 
@@ -77,7 +67,29 @@ function Index() {
 	};
 
 
+	this.isValidJSON = (array) => {
+		if (typeof array !== 'object' || array.length === 0) {
+			return false;
+		}
+		try {
+			if (array.length > 1) {
+				array.forEach((item) => {
+					// console.log(array);
+					if (!(item.hasOwnProperty('title') && item.hasOwnProperty('text'))) {
+						return false;
+					}
+				});
+			}
+			else {
 
+				if (!(array.hasOwnProperty('title') && item.hasOwnProperty('text'))) {
+					return false;
+				}
+			}
+
+			return true;
+		} catch (e) {
+			return false;
+		}
+	}
 }
-
-

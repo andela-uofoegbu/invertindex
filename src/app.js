@@ -1,89 +1,86 @@
+var output = []; // stores output to display in file list area
+var allFiles = {};
+var allFileNames = [];
 
+// function to readfiles
+function readFiles(files) {
+  var errors = []; // stores errors while uploading files
 
+  for (let i = 0; i < files.length; i++) { // reads files one at a time
 
-let duplicateFound;
+    let f = files[i];
 
-var output = [];
-
-var fileUploadedLists = {};
-var IndexObj = new Index();
-// console.log(new Index());
-//watch for change on the
-
-function isValidJsonObject(file) {
-  if (file.type == 'application/json') {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function readFiles() {
-
-  var fileInput = document.getElementById('fileInput');
-  var textType = /.json/;
-  var files = fileInput.files;
-  var errors = [];
-
-
-
-  for (var i = 0, f; f = files[i]; i++) {
     var reader = new FileReader();
-    var filename = f.name;
-
+    let refinedName = f.name.replace(/\.json/g, '').replace(/\s/g, ''); // replaces extension with space to enable store as key
     reader.onload = function (es) {
+      var IndexObj = new Index(); // create new index for each file being read
       try {
-        var contents = JSON.parse(es.target.result);
-      }
-      catch (e) {
-        document.getElementById('fileDisplayArea').innerHTML = '<ul>' + e.name + ": " + e.message + '</ul>';
-      }
-
-      if (Array.isArray(contents) && contents.length != 0) {
-        for (var x = 0; x < contents.length; x++) {
-          if (!isEmpty(contents[x])) {
-            contents[x].index = x;
-            contents[x].prettyIndex = x + 1;
-            IndexObj.allBooks.push(contents[x]);
-          }
-          else {
-            // console.log(filename);
-            errors.push("File " + filename + " is empty");
-          }
-
-        }
-      }
-      else {
-
-        if (!isEmpty(contents) && contents.text) {
-          contents.index = x;
-          contents.prettyIndex = x + 1;
-          IndexObj.allBooks.push(contents);
+        var contents = JSON.parse(es.target.result); // store content of file as json
+        if (!IndexObj.isValidJSON(contents)) { // throw exception if content does not have title and text keys
+          throw "Invalid JSON format";
         }
         else {
-          errors.push("File " + filename + " is empty");
-        }
-      }
-      document.getElementById('fileDisplayArea').innerHTML += errors
-    };
+          var filename = f.name;
+          if (Array.isArray(contents) && contents.length != 0) { // check if content is an array of objects
+            for (let x in contents) {
+              if (!isEmpty(contents[x])) {
+                contents[x].index = x;
+                contents[x].prettyIndex = parseInt(x) + 1;
+                contents[x].filename = filename;
+                IndexObj.allBooks.push(contents[x]);
+              }
+              else {
+                errors.push("File " + filename + " is empty");
+              }
 
-    if (!fileUploadedLists[f.name] && isValidJsonObject(f)) {
-      console.log(f);
+            }
+          }
+          else { // do this if content has just one object
+
+            if (!isEmpty(contents) && contents.text) {
+              contents.index = x;
+              contents.prettyIndex = parseInt(x) + 1;
+              contents.filename = filename;
+              IndexObj.allBooks.push(contents[x]);
+            }
+            else {
+              errors.push("File " + filename + " is empty");
+            }
+          }
+
+          document.getElementById('fileDisplayArea').innerHTML += errors;
+
+
+        }
+
+        document.getElementById('fileDisplayArea').innerHTML += errors;
+      }
+      catch (e) {
+        document.getElementById('fileDisplayArea').innerHTML = "<ul>" + filename + "is invalid</ul>";
+        return e;
+      }
+
+      IndexObj.createIndex();
+
+      allFiles[refinedName] = {};
+      allFiles[refinedName]['index'] = IndexObj;
+      allFiles[refinedName]['originalName'] = f.name;
+
+      let select = $('#dropdown');
+      let options = '';
+      select.append("<option value='"+ refinedName +"'>"+allFiles[refinedName]['originalName'] +"</option>")
+    }
+
+    if (!allFiles[refinedName] && f.type == 'application/json') {
       reader.readAsText(f);
-      fileUploadedLists[f.name] = true;
-      output.push('<li>' + f.name + '</li>');
     }
     else {
       errors.push("File " + f.name + " is not a valid json file");
 
     }
   }
-  document.getElementById('fileDisplayArea').innerHTML += errors
-  document.getElementById('fileDisplayArea').innerHTML = '<ul>' + output.join('') + '</ul>';
+
 }
-
-
 
 //Remove Duplicate words from Index
 
@@ -98,16 +95,16 @@ function isEmpty(obj) {
 
 
 function createIndex() {
+  var documentkey = document.getElementById('dropdown').value;
   document.getElementById('indexTableDiv').innerHTML = "";
-  IndexObj.createIndex();
-  var indices = IndexObj.getIndex();
+  var indices = allFiles[documentkey].index.getIndex();
   var keys = Object.keys(indices);
-  var books = IndexObj.allBooks;
+  var books = allFiles[documentkey].index.allBooks;
   var container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
   var table = $('#indexTable');
   var tableHeader = '<thead><th>Words</th>';
   for (var index in books) {
-    tableHeader += '<th>' + books[index].title.substring(0, 20); + "</th>";
+    tableHeader += '<th>Book ' + ++index + "</th>";
   }
   tableHeader += "</thead><tbody>";
   table.append(tableHeader);
@@ -118,9 +115,9 @@ function createIndex() {
       var td = "<td>";
       var whereWordsExist = indices[keys[index]];
       if (whereWordsExist.includes(i)) {
-        td += "<span class='tick'>&#10004;</span>";
+        td += "&#10004;";
       } else {
-        td += "<span class='crossout'>&#10006;</span>";
+        td += "&#10006;";
       }
       td += "</td>";
       row += td;
@@ -134,18 +131,17 @@ function createIndex() {
 }
 
 function searchIndex(terms) {
-  if (terms == "") {
-    return;
-  }
+  var documentkey = document.getElementById('dropdown').value;
+
   document.getElementById('indexTableDiv').innerHTML = "";
-  var searchResult = IndexObj.searchIndex(terms);
-  let books = IndexObj.allBooks;
+  var searchResult = allFiles[documentkey].index.searchIndex(terms);
+  let books = allFiles[documentkey].index.allBooks;
   let keys = Object.keys(searchResult);
   let container = $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
   let table = $('#indexTable');
   let tableHeader = '<thead><th>Words</th>';
   for (let index in books) {
-    tableHeader += '<th>' + books[index].title.substring(0, 20); + '</th>';
+    tableHeader += '<th>Book ' + ++index + "</th>";
   }
   tableHeader += "</thead><tbody>";
   table.append(tableHeader);
@@ -154,11 +150,11 @@ function searchIndex(terms) {
     row += '<td>' + keys[index] + '</td>';
     for (let i = 0; i < books.length; i++) {
       let td = "<td>";
-      let whereWordsExist = IndexObj.indexObject[keys[index]];
+      let whereWordsExist = allFiles[documentkey].index.indexObject[keys[index]];
       if (whereWordsExist.includes(i)) {
-        td += "<span class='tick'>&#10004;</span>";
+        td += "&#10004;";
       } else {
-        td += "<span class='crossout'>&#10006;</span>";
+        td += "&#10006;";
       }
       td += "</td>";
       row += td;
@@ -173,4 +169,11 @@ function searchIndex(terms) {
 
 };
 
+function reset () {
+  var output = [];
+var allFiles = {};
+var allFileNames = [];
+document.getElementById('fileDisplayArea').innerHTML = "";
+  document.getElementById('indexTableDiv').innerHTML = "";
 
+}
