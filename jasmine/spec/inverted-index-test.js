@@ -1,5 +1,6 @@
-
-// const Index = require("../../src/inverted-index.js");
+const Index = require('../../src/inverted-index.js');
+const filename = "books.json";
+const fs = require('fs');
 const books = [
   {
     title: 'Alice in Wonderland',
@@ -12,15 +13,20 @@ const books = [
   }
 ];
 
+
 describe('Book Indexer', () => {
   const indexInstance = new Index ();
+  let refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
+  indexInstance.files[refinedName] = {};
+  indexInstance.files[refinedName]['name'] = filename;
+  indexInstance.files[refinedName]['books'] = books;
 
-  for (const index in books) {
-    indexInstance.allBooks.push(books[index]);
-  }
+  indexInstance.createIndex(refinedName);
+  indexInstance.files[refinedName] = {};
+  indexInstance.files[refinedName]['name'] = filename;
+  indexInstance.files[refinedName]['books'] = fs.readFile('books.json');
 
-  indexInstance.createIndex();
-
+  console.log("this is the object "+indexInstance.files['books']);
   describe('Read Book data', () => {
     it('should be valid JSON', () => {
       expect(indexInstance.isValidJSON("hello")).toBe(false);
@@ -49,7 +55,7 @@ describe('Book Indexer', () => {
   describe('Search index', () => {
     it('should return the correct results of the search', () => {
       expect(indexInstance.searchIndex('Alice')).toEqual({ alice: [0] });
-      expect(indexInstance.searchIndex('a')).toEqual({ a: [0, 1] });
+      expect(indexInstance.searchIndex('a' , 'books.json')).toEqual({ a: [0, 1] });
       expect(indexInstance.searchIndex('alliance')).toEqual({ alliance: [1] });
     });
 
