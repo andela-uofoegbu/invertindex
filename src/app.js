@@ -4,7 +4,7 @@ var IndexObj = new Index();
 // function to readfiles
 function readFiles(files) {
   var errors = []; // stores errors while uploading files
-let select = $('#dropdown');
+  let select = $('#dropdown');
       let options = '';
       if(!$("#dropdown option[value='']").length > 0){
         select.append("<option value=''>All files</option>");
@@ -42,7 +42,7 @@ let select = $('#dropdown');
         document.getElementById('fileDisplayArea').innerHTML += errors;
       }
       catch (e) {
-        document.getElementById('fileDisplayArea').innerHTML = "<ul>" + f.name + "is invalid</ul>";
+        document.getElementById('fileDisplayArea').innerHTML = "<ul>" + f.name + " is invalid</ul>";
         return e;
       }
 
@@ -55,10 +55,8 @@ let select = $('#dropdown');
     }
     else {
       errors.push("File " + f.name + " is not a valid json file");
-
     }
   }
-console.log(IndexObj);
 }
 
 //Remove Duplicate words from Index
@@ -74,8 +72,9 @@ function isEmpty(obj) {
 
 
 function createIndex() {
+
   var documentkey = document.getElementById('dropdown').value;
-  var books = [];
+  var books;
   document.getElementById('indexTableDiv').innerHTML = "";
   var indices;
   if(documentkey){
@@ -83,16 +82,13 @@ function createIndex() {
     books = IndexObj.files[documentkey].books;
   }
   else{
-    indices = IndexObj.getIndex();
-
-    for (index in IndexObj.files){
-      books = books.concat(IndexObj.files[index].books);
-    }
+    // console.log(IndexObj.files);
+    !IndexObj.files.index ? IndexObj.collateBooks() : null;
+    indices = IndexObj.files.index;
+    books = IndexObj.files.allBooks;
   }
   var keys = Object.keys(indices);
-
   buildTable(books, indices, keys);
-
 }
 
 function searchIndex(terms) {
@@ -101,17 +97,11 @@ function searchIndex(terms) {
   document.getElementById('indexTableDiv').innerHTML = "";
   var searchResult;
   if(documentkey){
-    console.log(documentkey);
     searchResult = IndexObj.searchIndex(terms, documentkey);
-  books = IndexObj.files[documentkey].books;
-
-  }
-  else{
-    searchResult = IndexObj.searchIndex(terms);
-
-    for (index in IndexObj.files){
-      books = books.concat(IndexObj.files[index].books);
-    }
+    books = IndexObj.files[documentkey].books;
+  } else {
+    searchResult = IndexObj.searchAll(terms);
+    books = IndexObj.files.allBooks;
   }
 
   let keys = Object.keys(searchResult);
@@ -124,7 +114,7 @@ var allFiles = {};
 var allFileNames = [];
 document.getElementById('fileDisplayArea').innerHTML = "";
   document.getElementById('indexTableDiv').innerHTML = "";
-location.reload;
+location.reload();;
 }
 
 
@@ -143,8 +133,7 @@ function buildTable(books, indices, keys) {
     for (var i = 0; i < books.length; i++) {
       var td = "";
       var whereWordsExist = indices[keys[index]];
-      console.log(whereWordsExist);
-      if (whereWordsExist.includes(i)) {
+      if (whereWordsExist.indexOf(i)>=0) {
         td += "<td class='tick'>&#10004;";
       } else {
         td += "<td class='crossout'>&#10006;";
