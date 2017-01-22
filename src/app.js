@@ -5,10 +5,11 @@ var IndexObj = new Index();
 function readFiles(files) {
   var errors = []; // stores errors while uploading files
   let select = $('#dropdown');
-      let options = '';
-      if(!$("#dropdown option[value='']").length > 0){
-        select.append("<option value=''>All files</option>");
-      }
+  let options = '';
+
+  if (!$("#dropdown option[value='']").length > 0) {
+    select.append("<option value=''>All files</option>");
+  }
 
   for (let i = 0; i < files.length; i++) { // reads files one at a time
 
@@ -18,37 +19,34 @@ function readFiles(files) {
     let refinedName = f.name.replace(/\.json/g, '').replace(/\s/g, '');
 
     reader.onload = function (es) {
+
       try {
-        var contents = JSON.parse(es.target.result); // store content of file as json
-        if (!IndexObj.isValidJSON(contents)) { // throw exception if content does not have title and text keys
-          throw "Invalid JSON format";
-        }
-        else {
-          IndexObj.files[refinedName] = {};
-          IndexObj.files[refinedName]['name'] = f.name;
-          if (Array.isArray(contents) && contents.length != 0) { // check if content is an array of objects
-            IndexObj.files[refinedName]['books'] = contents;
-          }
-          else { // do this if content has just one object
-            IndexObj.files[refinedName]['books'] = [contents];
-          }
-
-          IndexObj.createIndex(refinedName);
-          document.getElementById('fileDisplayArea').innerHTML += errors;
-
-
-        }
-
-        document.getElementById('fileDisplayArea').innerHTML += errors;
-      }
-      catch (e) {
+        var contents = IndexObj.isValidJSON(es.target.result);
+      } catch (e) {
         document.getElementById('fileDisplayArea').innerHTML = "<ul>" + f.name + " is invalid</ul>";
         return e;
       }
 
+      if (!contents) throw "Some error occurred!!!";
 
-      select.append("<option value='"+ refinedName +"'>"+IndexObj.files[refinedName]['name'] +"</option>");
+      IndexObj.files[refinedName] = {};
+      IndexObj.files[refinedName]['name'] = f.name;
+      if (Array.isArray(contents) && contents.length != 0) { // check if content is an array of objects
+        IndexObj.files[refinedName]['books'] = contents;
+      }
+      else { // do this if content has just one object
+        IndexObj.files[refinedName]['books'] = [contents];
+      }
+
+      IndexObj.createIndex(refinedName);
+      document.getElementById('fileDisplayArea').innerHTML += errors;
+
+
+      select.append("<option value='" + refinedName + "'>" + IndexObj.files[refinedName]['name'] + "</option>");
+
     }
+
+    document.getElementById('fileDisplayArea').innerHTML += errors;
 
     if (!IndexObj.files[refinedName] && f.type == 'application/json') {
       reader.readAsText(f);
@@ -59,29 +57,17 @@ function readFiles(files) {
   }
 }
 
-//Remove Duplicate words from Index
-
-//Check if JSON object is empty
-function isEmpty(obj) {
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key))
-      return false;
-  }
-  return true;
-}
-
-
 function createIndex() {
 
   var documentkey = document.getElementById('dropdown').value;
   var books;
   document.getElementById('indexTableDiv').innerHTML = "";
   var indices;
-  if(documentkey){
+  if (documentkey) {
     indices = IndexObj.getIndex(documentkey);
     books = IndexObj.files[documentkey].books;
   }
-  else{
+  else {
     // console.log(IndexObj.files);
     !IndexObj.files.index ? IndexObj.collateBooks() : null;
     indices = IndexObj.files.index;
@@ -96,7 +82,7 @@ function searchIndex(terms) {
   var books = [];
   document.getElementById('indexTableDiv').innerHTML = "";
   var searchResult;
-  if(documentkey){
+  if (documentkey) {
     searchResult = IndexObj.searchIndex(terms, documentkey);
     books = IndexObj.files[documentkey].books;
   } else {
@@ -108,13 +94,13 @@ function searchIndex(terms) {
   buildTable(books, searchResult, keys);
 }
 
-function reset () {
+function reset() {
   var output = [];
-var allFiles = {};
-var allFileNames = [];
-document.getElementById('fileDisplayArea').innerHTML = "";
+  var allFiles = {};
+  var allFileNames = [];
+  document.getElementById('fileDisplayArea').innerHTML = "";
   document.getElementById('indexTableDiv').innerHTML = "";
-location.reload();;
+  location.reload();;
 }
 
 
@@ -123,7 +109,7 @@ function buildTable(books, indices, keys) {
   var table = $('#indexTable');
   var tableHeader = '<thead><th>Words</th>';
   for (var index in books) {
-    tableHeader += '<th>'+ books[index].title.substring(0, 20) + "</th>";
+    tableHeader += '<th>' + books[index].title.substring(0, 20) + "</th>";
   }
   tableHeader += "</thead><tbody>";
   table.append(tableHeader);
@@ -133,7 +119,7 @@ function buildTable(books, indices, keys) {
     for (var i = 0; i < books.length; i++) {
       var td = "";
       var whereWordsExist = indices[keys[index]];
-      if (whereWordsExist.indexOf(i)>=0) {
+      if (whereWordsExist.indexOf(i) >= 0) {
         td += "<td class='tick'>&#10004;";
       } else {
         td += "<td class='crossout'>&#10006;";

@@ -36,7 +36,7 @@ function Index() {
 	};
 
 	this.searchIndex = function (terms, filepath) {
-		var termsArr = removePunctuation(terms).split(" ");
+		var termsArr = removePunctuation(terms).split(" ")
 		var subResult = {};
 		if (filepath) {
 			for (index in termsArr) {
@@ -44,7 +44,7 @@ function Index() {
 			}
 				return subResult;
 		} else {
-			return searchAll(terms, this.files); // pass this.files as parameter because private function
+			return searchAll(terms, this.files);
 		}
 
 	};
@@ -94,30 +94,35 @@ function Index() {
 		return this.files.index;
 	}
 
-	this.isValidJSON = (array) => {
-		if (typeof array !== 'object' || array.length === 0) {
-			return false;
-		}
+	this.isValidJSON = (uploadedFile) => {
+		let isValid = true;
 		try {
-			if (array.length > 1) {
-				array.forEach((item) => {
-					if (!(item.hasOwnProperty('title') && item.hasOwnProperty('text'))) {
-						return false;
+			var file = JSON.parse(uploadedFile);
+			if(Array.isArray(file)) {
+				file.forEach((item) => {
+					if (!item.hasOwnProperty('title') || !item.hasOwnProperty('text')) {
+						isValid = false;
 					}
 				});
+			} else {
+				if (!file.hasOwnProperty('title') || !file.hasOwnProperty('text')) {
+						isValid = false
+					}
 			}
-			else {
-
-				if (!(array.hasOwnProperty('title') && item.hasOwnProperty('text'))) {
-					return false;
-				}
-			}
-
-			return true;
-		} catch (e) {
-			return false;
+		} catch (error) {
+			throw new Error("JSON file invalid");
 		}
+
+		return isValid ? file : isValid;
 	}
+
+	this.isEmpty=(obj) =>{
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key))
+      return false;
+  }
+  return true;
+}
 
 	function removePunctuation(data) {
 		return data.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/g, " ").replace(/\s+/g, ' ').toLowerCase();

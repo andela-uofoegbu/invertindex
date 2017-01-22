@@ -26,23 +26,22 @@ describe('Book Indexer', () => {
   indexInstance.files[refinedName]['name'] = filename;
   indexInstance.files[refinedName]['books'] = fs.readFile('books.json');
 
-  console.log("this is the object "+indexInstance.files['books']);
-  describe('Read Book data', () => {
+    describe('Read Book data', () => {
     it('should be valid JSON', () => {
-      expect(indexInstance.isValidJSON("hello")).toBe(false);
-      expect(indexInstance.isValidJSON(books)).toBe(true);
+      expect(indexInstance.isValidJSON('[{"hello":"false"}]')).toBe(false);
+      expect(indexInstance.isValidJSON(JSON.stringify(books))).toEqual(books);
     });
     it('should not be empty', () => {
-      expect(indexInstance.indexObject).not.toBe({});
-      expect(indexInstance.indexObject.length).not.toBe(0);
+      expect(indexInstance.isValidJSON(JSON.stringify(books)).length).not.toBe(0);
+      expect(indexInstance.isValidJSON(JSON.stringify(books)).length).toBe(2);
     });
   });
 
   describe('Populate Index', () => {
     it('should create index once JSON file has been read', () => {
-      expect(indexInstance.getIndex()).not.toBeUndefined();
-      expect(indexInstance.getIndex().length).not.toBe(0);
-      expect(indexInstance.getIndex()).toBeDefined();
+      expect(indexInstance.getIndex(refinedName)).not.toBeUndefined();
+      expect(indexInstance.getIndex(refinedName).length).not.toBe(0);
+      expect(indexInstance.getIndex(refinedName)).toBeDefined();
     });
 
     it('should be correct index', () => {
@@ -54,7 +53,7 @@ describe('Book Indexer', () => {
 
   describe('Search index', () => {
     it('should return the correct results of the search', () => {
-      expect(indexInstance.searchIndex('Alice')).toEqual({ alice: [0] });
+      expect(indexInstance.searchIndex('Alice', refinedName)).toEqual({ alice: [0] });
       expect(indexInstance.searchIndex('a' , 'books.json')).toEqual({ a: [0, 1] });
       expect(indexInstance.searchIndex('alliance')).toEqual({ alliance: [1] });
     });
