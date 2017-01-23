@@ -44,7 +44,7 @@ function Index() {
 			}
 				return subResult;
 		} else {
-			return searchAll(terms, this.files);
+			return this.searchAll(terms, this.files);
 		}
 
 	};
