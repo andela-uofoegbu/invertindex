@@ -58,7 +58,7 @@ function readFiles(files) {
 }
 
 function createIndex() {
-
+  // IndexObj.collateBooks();
   var documentkey = document.getElementById('dropdown').value;
   var books;
   document.getElementById('indexTableDiv').innerHTML = "";
@@ -69,7 +69,7 @@ function createIndex() {
   }
   else {
     // console.log(IndexObj.files);
-    !IndexObj.files.index ? IndexObj.collateBooks() : null;
+    IndexObj.collateBooks();
     indices = IndexObj.files.index;
     books = IndexObj.files.allBooks;
   }
@@ -95,12 +95,7 @@ function searchIndex(terms) {
 }
 
 function reset() {
-  var output = [];
-  var allFiles = {};
-  var allFileNames = [];
-  document.getElementById('fileDisplayArea').innerHTML = "";
-  document.getElementById('indexTableDiv').innerHTML = "";
-  location.reload();;
+  IndexObj.files = {};
 }
 
 
