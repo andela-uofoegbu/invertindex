@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/andela-uofoegbu/invertindex.svg?branch=master)](https://travis-ci.org/andela-uofoegbu/invertindex)
+[![Build Status](https://travis-ci.org/andela-uofoegbu/invertindex.svg?branch=restructuring)](https://travis-ci.org/andela-uofoegbu/invertindex)
 
 # Inverted-index
 Inverted index object that takes a JSON array of text objects and creates an index from the array. The index allows a user to search for word(s).
