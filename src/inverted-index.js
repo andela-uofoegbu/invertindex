@@ -27,11 +27,17 @@ class Index {
 	 * 	index: {}
 	 * }
 	 */
-	// this.allBooks = [];
 
   constructor() {
     this.files = {};
   }
+
+	/** Create Index
+	 * Creates an index from file(s) uploaded
+	 *
+	 * @param {String} filename
+	 * @param {Object} files
+	 */
 
   createIndex(filename, files) {
     let file = filename ? this.files[filename] : files;
@@ -55,17 +61,45 @@ class Index {
     file['index'] = indexObject;
   }
 
+	/** Search Index
+	 *
+	 *  takes a string and returns an object with the book position of the string
+	 *
+	 * @param {String} terms
+	 * @param {String} filepath
+	 * @returns {Object}
+	 *
+	 *
+	 */
+
   searchIndex(terms, filepath) {
     let termsArr = removePunctuation(terms).split(' ');
     let subResult = {};
     if (filepath) {
       for (let index in termsArr) {
-        subResult[termsArr[index]] = this.files[filepath].index[termsArr[index]];
+        if (this.files[filepath].index[termsArr[index]]){
+          subResult[termsArr[index]] = this.files[filepath].index[termsArr[index]];
+        }
+        else {
+          subResult[termsArr[index]] = [];
+        }
       }
       return subResult;
     }
     return this.searchAll(terms, this.files);
   }
+
+	/**
+	 * Search all
+	 *
+	 * If particular file is not selected, it returns search results from all
+	 * files
+	 *
+	 * @param {String} terms
+	 * @returns {Object}
+	 *
+	 *
+	 */
 
   searchAll(terms) {
     let termsArr = removePunctuation(terms).split(" ");
@@ -82,6 +116,15 @@ class Index {
     return subResult;
   }
 
+	/** Get index
+	 *
+	 * takes filename and returns index for that particular file
+	 *
+	 * @param {String} filename
+	 * @returns {Object}
+	 *
+	 *
+	 */
   getIndex(filename) {
     filename = filename || false;
     if (filename) {
@@ -89,7 +132,13 @@ class Index {
     }
   }
 
-
+/** Get all Books
+	 *
+	 * sets key with value containing all the books
+	 * @returns {Object}
+	 *
+	 *
+	 */
   getAllBooks() {
     let booksall = [];
     for (let filename in this.files) {

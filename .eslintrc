@@ -11,6 +11,8 @@
     "require": true
   },
   "rules": {
+    "no-loop-func":0,
+    "no-throw-literal":0,
     "guard-for-in":0,
     "no-tabs":0,
     "no-unused-expressions":0,

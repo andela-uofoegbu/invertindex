@@ -1,8 +1,5 @@
-// Karma configuration
-// Generated on Tue Jan 24 2017 11:25:29 GMT+0100 (WAT)
-
-module.exports = function(config) {
-  config.set({
+module.exports = function (config) {
+  const configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -15,8 +12,18 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'src/inverted-index.js',
       'jasmine/spec/inverted-index-test.js'
     ],
+
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage/'
+    },
+
+    // plugins: ['karma-coverage', 'karma-coveralls',
+    //   'karma-babel-preprocessor', 'karma-chrome-launcher',
+    //   'karma-jasmine'],
 
 
     // list of files to exclude
@@ -27,17 +34,18 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'src/inverted-index.js': ['coverage']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage', 'coveralls'],
 
 
     // web server port
-    port: 9876,
+    port: 9878,
 
 
     // enable / disable colors in the output (reporters and logs)
@@ -50,20 +58,33 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox', 'PhantomJS'],
-
+    // browsers: ['Chrome'],
+    browsers: process.env.TRAVIS ? ['Chrome_travis_ci'] : ['Chrome'],
+    // Custom launchers for travis.
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity
-  })
-}
+  };
+
+  // if (process.env.TRAVIS) {
+  //   configuration.browsers = ['Chrome_travis_ci'];
+  // }
+
+  config.set(configuration);
+};
