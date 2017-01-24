@@ -95,7 +95,13 @@ function searchIndex(terms) {
 }
 
 function reset() {
+  console.log
+   document.getElementById('indexTableDiv').innerHTML = '';
+   document.getElementById('fileInput').value = '';
+  $('#dropdown').empty();
   IndexObj.files = {};
+
+
 }
 
 
