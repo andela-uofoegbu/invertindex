@@ -3,10 +3,10 @@ const gulp = require('gulp'),
   spawn = require('child_process').spawn;
 
 const paths = {
-  jsFiles: ['./src/inverted-index.js'],
+  jsFiles: ['src/inverted-index.js'],
   htmlFiles: '*.html',
-  cssFiles: 'public/css/*.css',
-  scriptFiles: 'public/js/*.js',
+  cssFiles: '/css/*.css',
+  scriptFiles: 'src/*.js',
   testFiles: 'jasmine/spec/inverted-index-test.js',
   specRunner: 'jasmine/specRunner.html'
 };

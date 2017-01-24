@@ -12,22 +12,23 @@ readFiles = (files) => {
   for (let i = 0; i < files.length; i++)
   {
      // reads files one at a time
-
     let f = files[i];
 
     let reader = new FileReader();
     let refinedName = f.name.replace(/\.json/g, '').replace(/\s/g, '');
-
+    let contents;
     reader.onload = (es) => {
       try {
-        IndexObj.isValidJSON(es.target.result);
+        contents = IndexObj.isValidJSON(es.target.result);
       } catch (e) {
         document.getElementById('fileDisplayArea').innerHTML = `<ul>${f.name} is invalid</ul>`;
         return e;
       }
 
-      let contents = IndexObj.isValidJSON(es.target.result);
-      if (!contents) throw "Some error occurred!!!";
+      if (!contents) {
+        document.getElementById('fileDisplayArea').innerHTML = `<ul>${f.name} is invalid</ul>`;
+        throw "Some error occurred!!!";
+      }
 
       IndexObj.files[refinedName] = {};
       IndexObj.files[refinedName]['name'] = f.name;
@@ -44,15 +45,12 @@ readFiles = (files) => {
 
 
       select.append(`<option value='${refinedName}'>${IndexObj.files[refinedName]['name']}</option>`);
+
+
+      document.getElementById('fileDisplayArea').innerHTML += errors;
     };
-
-    document.getElementById('fileDisplayArea').innerHTML += errors;
-
-    if (!IndexObj.files[refinedName] && f.type === 'application/json') {
+    if (!IndexObj.files[refinedName]) {
       reader.readAsText(f);
-    }
-    else {
-      errors.push(`File ${f.name} is not a valid json file`);
     }
   }
 };
@@ -129,6 +127,7 @@ reset = () => {
   document.getElementById('indexTableDiv').innerHTML = '';
   document.getElementById('fileInput').value = '';
   $('#dropdown').empty();
+  document.getElementById('fileDisplayArea').innerHTML = '';
   IndexObj.files = {};
 };
 
