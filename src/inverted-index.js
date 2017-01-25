@@ -77,7 +77,7 @@ class Index {
     let subResult = {};
     if (filepath) {
       for (let index in termsArr) {
-        if (this.files[filepath].index[termsArr[index]]){
+        if (this.files[filepath].index[termsArr[index]]) {
           subResult[termsArr[index]] = this.files[filepath].index[termsArr[index]];
         }
         else {
@@ -111,6 +111,9 @@ class Index {
         if (termsArr[index] === indexedWord) {
           subResult[termsArr[index]] = allIndex[indexedWord];
         }
+      }
+      if (!subResult[termsArr[index]]) {
+        subResult[termsArr[index]] = [];
       }
     }
     return subResult;
@@ -149,15 +152,34 @@ class Index {
     this.files['allBooks'] = booksall;
   }
 
+
+
   collateBooks() {
     this.getAllBooks();
     this.createIndex(null, this.files);
   }
 
+/** Get all Index
+	 *
+	 * returns index of all books in all files
+	 * @returns {Object}
+	 *
+	 *
+	 */
   getAllIndex() {
     return this.files.index;
   }
 
+/** Get all Index
+	 *
+	 * Checks if contents of file uploaded is in the correct JSON
+	 * format with a title and text property returns true or false
+	 *
+	 * @param uploadedFile
+	 * @returns {bool}
+	 *
+	 *
+	 */
   isValidJSON(uploadedFile) {
     let isValid = true;
     let file;
