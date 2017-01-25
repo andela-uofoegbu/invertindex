@@ -1,6 +1,8 @@
 const gulp = require('gulp'),
   connect = require('gulp-connect'),
   spawn = require('child_process').spawn;
+const browserify = require('gulp-browserify');
+const rename = require('gulp-rename');
 
 const paths = {
   jsFiles: ['src/inverted-index.js'],
@@ -10,6 +12,13 @@ const paths = {
   testFiles: 'jasmine/spec/inverted-index-test.js',
   specRunner: 'jasmine/specRunner.html'
 };
+
+gulp.task('scripts', () => {
+  gulp.src('jasmine/spec/inverted-index-test.js')
+   .pipe(browserify())
+   .pipe(rename('bundle.js'))
+   .pipe(gulp.dest('jasmine/build'));
+});
 
 // serve
 gulp.task('serve', () => {

@@ -1,6 +1,5 @@
 describe('Book Indexer', () => {
   const Index = require('../../src/inverted-index.js');
-  const fs = require('fs');
   const filename = "books.json";
   const books = [
     {
@@ -18,7 +17,7 @@ describe('Book Indexer', () => {
 
   indexInstance.files[refinedName] = {};
   indexInstance.files[refinedName]['name'] = filename;
-  indexInstance.files[refinedName]['books'] = JSON.parse(fs.readFileSync('books.json'));
+  indexInstance.files[refinedName]['books'] = books;
   indexInstance.createIndex(refinedName);
   describe('Read Book data', () => {
     it('should be valid JSON', () => {
