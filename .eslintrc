@@ -10,6 +10,13 @@
   "globals": {
     "require": true
   },
+  "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
   "rules": {
     "no-loop-func":0,
     "no-throw-literal":0,
