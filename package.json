@@ -5,7 +5,7 @@
   "main": "src/inverted-index.js",
   "scripts": {
     "start": "gulp",
-    "test": "jasmine jasmine/spec/inverted-index-test.js"
+    "test": "karma start --single-runs"
   },
   "repository": {
     "type": "git",
