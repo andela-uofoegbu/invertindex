@@ -1,5 +1,7 @@
+const Index = require ("../../src/inverted-index.js");
+const indexInstance = new Index();
+
 describe('Book Indexer', () => {
-  const Index = require('../../src/inverted-index.js');
   const filename = "books.json";
   const books = [
     {
@@ -12,7 +14,7 @@ describe('Book Indexer', () => {
       text: 'An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring.'
     }
   ];
-  const indexInstance = new Index();
+
   let refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
 
   indexInstance.files[refinedName] = {};
