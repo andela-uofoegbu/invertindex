@@ -5,11 +5,11 @@ const browserify = require('gulp-browserify');
 const rename = require('gulp-rename');
 
 const paths = {
-  jsFiles: ['src/inverted-index.js'],
-  htmlFiles: '*.html',
-  cssFiles: '/css/*.css',
-  scriptFiles: 'src/*.js',
-  testFiles: 'jasmine/spec/inverted-index-test.js',
+  html_file: '*.html',
+  stylesheet_file: '/css/*.css',
+  test_file: 'jasmine/spec/inverted-index-test.js',
+  source_file: 'src/*.js',
+  javascript_file: ['src/inverted-index.js'],
   specRunner: 'jasmine/specRunner.html'
 };
 
@@ -33,10 +33,10 @@ gulp.task('serve', () => {
 
 // watch
 gulp.task('watch', () => {
-  gulp.watch(paths.jsFiles, ['reloadServer']);
-  gulp.watch(paths.htmlFiles, ['reloadServer']);
-  gulp.watch(paths.cssFiles, ['reloadServer']);
-  gulp.watch(paths.scriptFiles, ['reloadServer']);
+  gulp.watch(paths.javascript_file, ['reloadServer']);
+  gulp.watch(paths.html_file, ['reloadServer']);
+  gulp.watch(paths.stylesheet_file, ['reloadServer']);
+  gulp.watch(paths.source_file, ['reloadServer']);
 });
 
 // reload
@@ -53,7 +53,7 @@ gulp.task('test', () => {
 });
 
 gulp.task('testWatch', () => {
-  gulp.watch(paths.testFiles, ['testReload']);
+  gulp.watch(paths.test_file, ['testReload']);
 });
 
 gulp.task('testReload', () => {

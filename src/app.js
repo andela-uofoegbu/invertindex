@@ -2,6 +2,7 @@ let IndexObj = new Index();
 
 // function to readfiles
 readFiles = (files) => {
+  document.getElementById('fileDisplayArea').innerHTML = ``;
   let errors = []; // stores errors while uploading files
   let select = $('#dropdown');
 
@@ -21,12 +22,12 @@ readFiles = (files) => {
       try {
         contents = IndexObj.isValidJSON(es.target.result);
       } catch (e) {
-        document.getElementById('fileDisplayArea').innerHTML = `<ul>${f.name} is invalid</ul>`;
+        document.getElementById('fileDisplayArea').innerHTML += `<li>${f.name} is invalid</li>`;
         return e;
       }
 
       if (!contents) {
-        document.getElementById('fileDisplayArea').innerHTML = `<ul>${f.name} is invalid</ul>`;
+        document.getElementById('fileDisplayArea').innerHTML += `<li>${f.name} is invalid</li>`;
         throw "Some error occurred!!!";
       }
 
@@ -56,34 +57,36 @@ readFiles = (files) => {
 };
 
 buildTable = (books, indices, keys) => {
-  $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
-  let table = $('#indexTable');
-  let tableHeader = '<thead><th>Words</th>';
-  for (let index in books) {
-    tableHeader += `<th>${books[index].title.substring(0, 20)}</th>`;
-  }
-  tableHeader += "</thead><tbody>";
-  table.append(tableHeader);
-  for (let index in keys) {
-    let row = "<tr>";
-    row += `<td>${keys[index]}</td>`;
-    for (let i = 0; i < books.length; i++) {
-      let td = "";
-      let whereWordsExist = indices[keys[index]];
-      if (whereWordsExist.indexOf(i) >= 0) {
-        td += "<td class='tick'>&#10004;";
-      } else {
-        td += "<td class='crossout'>&#10006;";
-      }
-      td += "</td>";
-      row += td;
+  if (IndexObj.files.allBooks.length > 0) {
+    $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
+    let table = $('#indexTable');
+    let tableHeader = '<thead><th>Words</th>';
+    for (let index in books) {
+      tableHeader += `<th>${books[index].title.substring(0, 20)}</th>`;
     }
+    tableHeader += "</thead><tbody>";
+    table.append(tableHeader);
+    for (let index in keys) {
+      let row = "<tr>";
+      row += `<td>${keys[index]}</td>`;
+      for (let i = 0; i < books.length; i++) {
+        let td = "";
+        let whereWordsExist = indices[keys[index]];
+        if (whereWordsExist.indexOf(i) >= 0) {
+          td += "<td class='tick'>&#10004;";
+        } else {
+          td += "<td class='crossout'>&#10006;";
+        }
+        td += "</td>";
+        row += td;
+      }
 
-    row += "</tr>";
+      row += "</tr>";
 
-    table.append(row);
+      table.append(row);
+    }
+    table.append("</tbody>");
   }
-  table.append("</tbody>");
 };
 
 createIndex = () => {
