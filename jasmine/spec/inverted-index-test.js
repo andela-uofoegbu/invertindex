@@ -53,7 +53,7 @@ describe('Book Indexer', () => {
     });
 
     it('should handle a varied number of search terms as arguments', () => {
-      expect(indexInstance.searchIndex('lord rabbit man dwarf')).toEqual({ rabbit: [0], man: [1], dwarf: [1] });
+      expect(indexInstance.searchIndex('lord rabbit man dwarf')).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
       expect(indexInstance.searchIndex('a of elf')).toEqual({ a: [0, 1], of: [0, 1], elf: [1] });
     });
   });
