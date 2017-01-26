@@ -79,15 +79,25 @@ class Index {
     this.files = {};
   }
 
-	/** Create Index
-	 * Creates an index from file(s) uploaded
+	/** Remove Punctuation
+	 * removes punctuation from string and converts to lowercase
 	 *
-	 * @param {String} filename
-	 * @param {Object} files
+	 * @param {String} data
+	 * @returns {String}
 	 */
+
   static removePunctuation(data) {
     return data.replace(new RegExp("\\s+|[`~!@#$%^&*()_|+-=?;:'\",\\.<>{}\\[\\]\\/\\\\]", 'g'), " ").toLowerCase();
   }
+
+	/** Delete Dupicate
+	 * joins all the strings in all books in a particular file,
+	 * splits into array and removes duplicates
+	 *
+	 * @param {Object} file
+	 * @returns {Array} bookString
+	 */
+
   static deleteDuplicate(file) {
     let bookString = "";
     let books = file.allBooks ? file.allBooks : file.books;
@@ -100,6 +110,13 @@ class Index {
 			// test to check for duplicate. If Index of current object is equals to index
   );
   }
+
+	/** Create Index
+	 * Creates an index from file(s) uploaded
+	 *
+	 * @param {String} filename
+	 * @param {Object} files
+	 */
 
   createIndex(filename, files) {
     let file = filename ? this.files[filename] : files;
