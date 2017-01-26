@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "child_process": "^1.0.2",
+    "coveralls": "^2.11.15",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-connect": "^5.0.0",
