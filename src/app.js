@@ -6,9 +6,7 @@ readFiles = (files) => {
   let errors = []; // stores errors while uploading files
   let select = $('#dropdown');
   if (!$("#dropdown option[value='']").length > 0) {
-    if (Object.keys(IndexObj.files).length > 0) {
-      select.append("<option value='' selected >All files</option>");
-    }
+    select.append("<option value='' selected >All files</option>");
   }
 
   for (let i = 0; i < files.length; i++)
