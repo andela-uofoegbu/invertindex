@@ -6,7 +6,6 @@ readFiles = (files) => {
   let errors = []; // stores errors while uploading files
   let select = $('#dropdown');
   if (!$("#dropdown option[value='']").length > 0) {
-    console.log(Object.keys(IndexObj.files).length);
     if (Object.keys(IndexObj.files).length > 0) {
       select.append("<option value='' selected >All files</option>");
     }
@@ -102,7 +101,6 @@ createIndex = () => {
     books = IndexObj.files[documentkey].books;
   }
   else {
-    // console.log(IndexObj.files);
     IndexObj.collateBooks();
     indices = IndexObj.files.index;
     books = IndexObj.files.allBooks;
