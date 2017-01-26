@@ -5,9 +5,11 @@ readFiles = (files) => {
   document.getElementById('fileDisplayArea').innerHTML = ``;
   let errors = []; // stores errors while uploading files
   let select = $('#dropdown');
-
+console.log
   if (!$("#dropdown option[value='']").length > 0) {
-    select.append("<option value=''>All files</option>");
+    if(files.length > 1) {
+      select.append("<option value=''>All files</option>");
+    }
   }
 
   for (let i = 0; i < files.length; i++)
@@ -57,7 +59,7 @@ readFiles = (files) => {
 };
 
 buildTable = (books, indices, keys) => {
-  if (IndexObj.files.allBooks.length > 0) {
+  if (!jQuery.isEmptyObject(IndexObj.files)) {
     $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
     let table = $('#indexTable');
     let tableHeader = '<thead><th>Words</th>';
@@ -134,4 +136,3 @@ reset = () => {
   document.getElementById('query').value = '';
   IndexObj.files = {};
 };
-
