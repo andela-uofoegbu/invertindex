@@ -5,10 +5,10 @@ readFiles = (files) => {
   document.getElementById('fileDisplayArea').innerHTML = ``;
   let errors = []; // stores errors while uploading files
   let select = $('#dropdown');
-console.log
   if (!$("#dropdown option[value='']").length > 0) {
-    if(files.length > 1) {
-      select.append("<option value=''>All files</option>");
+    console.log(Object.keys(IndexObj.files).length);
+    if (Object.keys(IndexObj.files).length > 0) {
+      select.append("<option value='' selected >All files</option>");
     }
   }
 
