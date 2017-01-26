@@ -131,6 +131,7 @@ reset = () => {
   document.getElementById('fileInput').value = '';
   $('#dropdown').empty();
   document.getElementById('fileDisplayArea').innerHTML = '';
+  document.getElementById('query').value = '';
   IndexObj.files = {};
 };
 
