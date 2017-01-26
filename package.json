@@ -4,8 +4,10 @@
   "description": "",
   "main": "src/inverted-index.js",
   "scripts": {
-    "start": "gulp",
-    "test": "karma start --single-runs"
+    "send-cov": "coveralls < coverage/lcov.info",
+    "start": "node node_modules/gulp-cli/bin/gulp",
+    "test": "karma start karma.conf.js --singleRun",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -40,6 +42,8 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-istanbul": "0.0.2",
     "karma-jasmine": "^1.1.0",
-    "karma-phantomjs-launcher": "^1.0.2"
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-verbose-reporter": "0.0.5",
+    "watchify": "^3.9.0"
   }
 }
