@@ -5,7 +5,7 @@
   "main": "src/inverted-index.js",
   "scripts": {
     "send-cov": "coveralls < coverage/lcov.info",
-    "start": "gulp",
+    "start": "node node_modules/gulp/bin/gulp serve",
     "test": "karma start karma.conf.js --singleRun",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
@@ -45,5 +45,12 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-verbose-reporter": "0.0.5",
     "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-rename": "^1.2.2"
   }
 }
