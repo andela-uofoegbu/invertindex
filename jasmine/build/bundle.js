@@ -94,7 +94,7 @@ class Index {
       if (item !== " ") return item;
     }).join(" ")
     .toLowerCase()
-    .split();
+    .split(" ");
   }
 
 	/** Delete Dupicate

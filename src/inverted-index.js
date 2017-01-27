@@ -12,7 +12,7 @@ class Index {
 	 */
 
   constructor() {
-    this.files = {}; // stores all files uploaded
+    this.files = {};
   }
 
 	/** Remove Punctuation
@@ -27,7 +27,7 @@ class Index {
       if (item !== " ") return item;
     }).join(" ")
     .toLowerCase()
-    .split();
+    .split(" ");
   }
 
 	/** Delete Dupicate
