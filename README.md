@@ -7,7 +7,7 @@ Inverted index object that takes a JSON array of text objects and creates an ind
 
 ## Usage
 
-* Clone the repository git clone https://github.com/andela-uofoegbu/inverted-index.git
+* Clone the repository git clone https://github.com/andela-uofoegbu/invertindex.git
 * Run 'npm install' in terminal to install all the dependencies
 * To run the test, run 'npm test'
 * To use inverted index, run gulp and go to localhost://3000

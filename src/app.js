@@ -9,9 +9,8 @@ readFiles = (files) => {
     select.append("<option value='' selected >All files</option>");
   }
 
-  for (let i = 0; i < files.length; i++)
-  {
-     // reads files one at a time
+  for (let i = 0; i < files.length; i++) {
+    // reads files one at a time
     let f = files[i];
 
     let reader = new FileReader();
@@ -56,7 +55,7 @@ readFiles = (files) => {
 };
 
 buildTable = (books, indices, keys) => {
-  if (!jQuery.isEmptyObject(IndexObj.files)) {
+  if (Object.keys(IndexObj.files).length > 2) {
     $('#indexTableDiv').append($("<table id='indexTable' class='table' />"));
     let table = $('#indexTable');
     let tableHeader = '<thead><th>Words</th>';
@@ -109,19 +108,21 @@ createIndex = () => {
 
 searchIndex = (terms) => {
   let documentkey = document.getElementById('dropdown').value;
-  let books = [];
-  document.getElementById('indexTableDiv').innerHTML = "";
-  let searchResult;
-  if (documentkey) {
-    searchResult = IndexObj.searchIndex(terms, documentkey);
-    books = IndexObj.files[documentkey].books;
-  } else {
-    searchResult = IndexObj.searchAll(terms);
-    books = IndexObj.files.allBooks;
-  }
+  if (terms.length > 0) {
+    let books = [];
+    document.getElementById('indexTableDiv').innerHTML = "";
+    let searchResult;
+    if (documentkey) {
+      searchResult = IndexObj.searchIndex(terms, documentkey);
+      books = IndexObj.files[documentkey].books;
+    } else {
+      searchResult = IndexObj.searchAll(terms);
+      books = IndexObj.files.allBooks;
+    }
 
-  let keys = Object.keys(searchResult);
-  buildTable(books, searchResult, keys);
+    let keys = Object.keys(searchResult);
+    buildTable(books, searchResult, keys);
+  }
 };
 
 reset = () => {

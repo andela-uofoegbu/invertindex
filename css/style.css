@@ -8,7 +8,8 @@
 
 .btn {
   background: #dee2e8;
-  font-weight: bold; }
+  font-weight: bold;
+  margin-bottom:10px;}
 
 .container {
   background: #eee;

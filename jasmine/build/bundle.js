@@ -58,6 +58,9 @@ describe('Book Indexer', () => {
       expect(indexInstance.searchIndex('lord rabbit man dwarf')).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
       expect(indexInstance.searchIndex('a of elf')).toEqual({ a: [0, 1], of: [0, 1], elf: [1] });
     });
+    it('should handle array of words as search terms', () => {
+      expect(indexInstance.searchIndex(["lord", "rabbit", "man", "dwarf"])).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
+    });
   });
 });
 
@@ -79,15 +82,25 @@ class Index {
     this.files = {};
   }
 
-	/** Create Index
-	 * Creates an index from file(s) uploaded
+	/** Remove Punctuation
+	 * removes punctuation from string and converts to lowercase
 	 *
-	 * @param {String} filename
-	 * @param {Object} files
+	 * @param {String} data
+	 * @returns {String}
 	 */
+
   static removePunctuation(data) {
-    return data.replace(new RegExp("\\s+|[`~!@#$%^&*()_|+-=?;:'\",\\.<>{}\\[\\]\\/\\\\]", 'g'), " ").toLowerCase();
+    return data.replace(new RegExp("[^A-Z0-9\\s+]", 'gi'), " ").split(" ").filter(el => el !== "").join(" ");
   }
+
+	/** Delete Dupicate
+	 * joins all the strings in all books in a particular file,
+	 * splits into array and removes duplicates
+	 *
+	 * @param {Object} file
+	 * @returns {Array} bookString
+	 */
+
   static deleteDuplicate(file) {
     let bookString = "";
     let books = file.allBooks ? file.allBooks : file.books;
@@ -101,13 +114,19 @@ class Index {
   );
   }
 
+	/** Create Index
+	 * Creates an index from file(s) uploaded
+	 *
+	 * @param {String} filename
+	 * @param {Object} files
+	 */
+
   createIndex(filename, files) {
     let file = filename ? this.files[filename] : files;
     let books = filename ? this.files[filename].books : files.allBooks;
     const indexObject = {};
     let wordList = Index.deleteDuplicate(file).sort().join(' ').toLowerCase()
 		.split(' ');
-    wordList.shift();
     for (let i in wordList) {
       for (let j = 0; j < books.length; j++) {
         let re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
@@ -135,7 +154,11 @@ class Index {
 	 */
 
   searchIndex(terms, filepath) {
-    let termsArr = Index.removePunctuation(terms).split(' ');
+    let termsArr;
+    if (Array.isArray(terms)) {
+      terms = terms.join(" ");
+    }
+    termsArr = Index.removePunctuation(terms).toLowerCase().split(' ');
     let subResult = {};
     if (filepath) {
       for (let index in termsArr) {
@@ -164,7 +187,7 @@ class Index {
 	 */
 
   searchAll(terms) {
-    let termsArr = Index.removePunctuation(terms).split(" ");
+    let termsArr = Index.removePunctuation(terms).toLowerCase().split(" ");
     !this.files.index ? this.collateBooks() : null;
     let allIndex = this.files.index;
     let subResult = {};
