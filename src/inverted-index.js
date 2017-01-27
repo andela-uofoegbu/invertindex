@@ -23,7 +23,11 @@ class Index {
 	 */
 
   static removePunctuation(data) {
-    return data.replace(new RegExp("\\s+|[`~!@#$%^&*()_|+-=?;:'\",\\.<>{}\\[\\]\\/\\\\]", 'g'), " ").toLowerCase();
+    return data.replace(new RegExp("[^A-Z0-9\\s+]", 'gi'), " ").split(" ").filter((item) => {
+      if (item !== " ") return item;
+    }).join(" ")
+    .toLowerCase()
+    .split(" ");
   }
 
 	/** Delete Dupicate
@@ -40,11 +44,11 @@ class Index {
     for (let i = 0; i < books.length; i++) {
       bookString += ` ${books[i].text}`;
     }
-    bookString = Index.removePunctuation(bookString).split(" ");
+    bookString = Index.removePunctuation(bookString);
 
     return bookString.filter((item, index, arr) => arr.indexOf(item) === index
-			// test to check for duplicate. If Index of current object is equals to index
-  );
+      // test to check for duplicate. If Index of current object is equals to index
+    );
   }
 
 	/** Create Index
@@ -52,6 +56,7 @@ class Index {
 	 *
 	 * @param {String} filename
 	 * @param {Object} files
+   * @returns none
 	 */
 
   createIndex(filename, files) {
@@ -59,16 +64,15 @@ class Index {
     let books = filename ? this.files[filename].books : files.allBooks;
     const indexObject = {};
     let wordList = Index.deleteDuplicate(file).sort().join(' ').toLowerCase()
-		.split(' ');
-    wordList.shift();
+      .split(' ');
     for (let i in wordList) {
       for (let j = 0; j < books.length; j++) {
         let re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
         if (re.test(books[j].text)) {
           if (indexObject[wordList[i]]) {
-            indexObject[wordList[i]].push(j);
+            indexObject[wordList[i]].push(j); // second looping
           } else {
-            indexObject[wordList[i]] = [j];
+            indexObject[wordList[i]] = [j]; // first time key is added
           }
         }
       }
@@ -88,7 +92,11 @@ class Index {
 	 */
 
   searchIndex(terms, filepath) {
-    let termsArr = Index.removePunctuation(terms).split(' ');
+    let termsArr;
+    if (Array.isArray(terms)) {
+      terms = terms.join(" ");
+    }
+    termsArr = Index.removePunctuation(terms);
     let subResult = {};
     if (filepath) {
       for (let index in termsArr) {
@@ -117,8 +125,10 @@ class Index {
 	 */
 
   searchAll(terms) {
-    let termsArr = Index.removePunctuation(terms).split(" ");
-    !this.files.index ? this.collateBooks() : null;
+    let termsArr = Index.removePunctuation(terms);
+    if (!this.files.index) {
+      this.collateBooks();
+    }
     let allIndex = this.files.index;
     let subResult = {};
     for (let index in termsArr) {
@@ -150,13 +160,13 @@ class Index {
     }
   }
 
-/** Get all Books
-	 *
-	 * sets key with value containing all the books
-	 * @returns {Object}
-	 *
-	 *
-	 */
+  /** Get all Books
+     *
+     * sets key with value containing all the books
+     * @returns {Object}
+     *
+     *
+     */
   getAllBooks() {
     let booksall = [];
     for (let filename in this.files) {
@@ -174,27 +184,27 @@ class Index {
     this.createIndex(null, this.files);
   }
 
-/** Get all Index
-	 *
-	 * returns index of all books in all files
-	 * @returns {Object}
-	 *
-	 *
-	 */
+  /** Get all Index
+     *
+     * returns index of all books in all files
+     * @returns {Object}
+     *
+     *
+     */
   getAllIndex() {
     return this.files.index;
   }
 
-/** Get all Index
-	 *
-	 * Checks if contents of file uploaded is in the correct JSON
-	 * format with a title and text property returns true or false
-	 *
-	 * @param uploadedFile
-	 * @returns {bool}
-	 *
-	 *
-	 */
+  /** Get all Index
+     *
+     * Checks if contents of file uploaded is in the correct JSON
+     * format with a title and text property returns true or false
+     *
+     * @param {String} uploadedFile
+     * @returns {bool}
+     *
+     *
+     */
   isValidJSON(uploadedFile) {
     let isValid = true;
     let file;
