@@ -12,7 +12,7 @@ class Index {
 	 */
 
   constructor() {
-    this.files = {};
+    this.files = {}; // stores all files uploaded
   }
 
 	/** Remove Punctuation
@@ -25,7 +25,9 @@ class Index {
   static removePunctuation(data) {
     return data.replace(new RegExp("[^A-Z0-9\\s+]", 'gi'), " ").split(" ").filter((item) => {
       if (item !== " ") return item;
-    }).join(" ");
+    }).join(" ")
+    .toLowerCase()
+    .split();
   }
 
 	/** Delete Dupicate
@@ -42,7 +44,7 @@ class Index {
     for (let i = 0; i < books.length; i++) {
       bookString += ` ${books[i].text}`;
     }
-    bookString = Index.removePunctuation(bookString).split(" ");
+    bookString = Index.removePunctuation(bookString);
 
     return bookString.filter((item, index, arr) => arr.indexOf(item) === index
       // test to check for duplicate. If Index of current object is equals to index
@@ -68,9 +70,9 @@ class Index {
         let re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
         if (re.test(books[j].text)) {
           if (indexObject[wordList[i]]) {
-            indexObject[wordList[i]].push(j);
+            indexObject[wordList[i]].push(j); // second looping
           } else {
-            indexObject[wordList[i]] = [j];
+            indexObject[wordList[i]] = [j]; // first time key is added
           }
         }
       }
@@ -94,7 +96,7 @@ class Index {
     if (Array.isArray(terms)) {
       terms = terms.join(" ");
     }
-    termsArr = Index.removePunctuation(terms).toLowerCase().split(' ');
+    termsArr = Index.removePunctuation(terms);
     let subResult = {};
     if (filepath) {
       for (let index in termsArr) {
@@ -123,8 +125,10 @@ class Index {
 	 */
 
   searchAll(terms) {
-    let termsArr = Index.removePunctuation(terms).toLowerCase().split(" ");
-    !this.files.index ? this.collateBooks() : null;
+    let termsArr = Index.removePunctuation(terms);
+    if (!this.files.index) {
+      this.collateBooks();
+    }
     let allIndex = this.files.index;
     let subResult = {};
     for (let index in termsArr) {

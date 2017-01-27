@@ -37,6 +37,7 @@ gulp.task('watch', () => {
   gulp.watch(paths.html_file, ['reloadServer']);
   gulp.watch(paths.stylesheet_file, ['reloadServer']);
   gulp.watch(paths.source_file, ['reloadServer']);
+  gulp.watch(paths.test_file, ['reloadServer']);
 });
 
 // reload
