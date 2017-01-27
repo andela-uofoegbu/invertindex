@@ -122,7 +122,6 @@ class Index {
 	 * Creates an index from file(s) uploaded
 	 *
 	 * @param {String} filename
-	 * @param {Object} files
    * @returns none
 	 */
 
