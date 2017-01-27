@@ -54,6 +54,7 @@ class Index {
 	 *
 	 * @param {String} filename
 	 * @param {Object} files
+   * @returns none
 	 */
 
   createIndex(filename, files) {
@@ -195,7 +196,7 @@ class Index {
      * Checks if contents of file uploaded is in the correct JSON
      * format with a title and text property returns true or false
      *
-     * @param uploadedFile
+     * @param {String} uploadedFile
      * @returns {bool}
      *
      *
