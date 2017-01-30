@@ -15,5 +15,4 @@ before_install:
  - sudo dpkg -i google-chrome*.deb
 
 # Send coverage data to Coveralls
-after_script:
-    - npm run coveralls
+after_success: 'npm run coveralls'
