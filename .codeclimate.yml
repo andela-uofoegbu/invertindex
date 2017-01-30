@@ -1,13 +1,21 @@
-eslint:
-  enabled: true
-  config:
+engines:
+  eslint:
+    enabled: true
+    channel: "eslint-2"
+    config:
     extensions:
     - .es6
     - .js
     - .jsx
-
+  duplication:
+    enabled: true
+    checks:
+      Similar code:
+        enabled: false
+    config:
+      languages:
+      - javascript
 ratings:
-   paths:
-   - "**.es6"
-   - "**.js"
-   - "**.jsx"
+  paths:
+  - src/*.js
+exclude_paths: []
