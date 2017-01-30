@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/inverted-index.js",
   "scripts": {
+    "coveralls": "istanbul cover jasmine-node --captureExceptions test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "node node_modules/gulp/bin/gulp serve",
     "test": "karma start karma.conf.js --singleRun"
   },
@@ -31,6 +32,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
     "jasmine-core": "^2.5.2",
+    "jasmine-node": "^1.14.5",
     "karma": "^1.4.0",
     "karma-browserify": "^5.1.0",
     "karma-chrome-launcher": "^2.0.0",
