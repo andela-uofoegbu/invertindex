@@ -9,6 +9,13 @@ class Index {
     this.files = {};
   }
 
+
+/** convert to Array
+	 * converts string to array
+	 *
+	 * @param {String} data
+	 * @returns {Array} data
+	 */
   static convertToArray(data) {
     return data.toLowerCase().split(' ').sort();
   }
@@ -31,11 +38,11 @@ class Index {
   }
 
 	/** Delete Dupicate
-	 * joins all the strings in all books in a particular file,
-	 * splits into array and removes duplicates
 	 *
-	 * @param {Object} file
-	 * @returns {Array} bookString
+	 * deletes duplicate array elements
+	 *
+	 * @param {Array} bookArray
+	 * @returns {Array} bookArray
 	 */
 
   static deleteDuplicate(bookArray) {
@@ -43,6 +50,13 @@ class Index {
     return bookArray.filter((item, index, arr) => arr.indexOf(item) === index);
   }
 
+/** collateBooks
+	 *
+	 * collates all books in all files into one array
+	 *
+	 * @param {Object} files
+	 * @returns {Array} booksall
+	 */
   static collateBooks(files) {
     let booksall = [];
     for (const filename in files) {
@@ -52,6 +66,7 @@ class Index {
     }
     return booksall;
   }
+
 	/** Create Index
 	 * Creates an index from file(s) uploaded
 	 *
@@ -105,7 +120,7 @@ class Index {
 
 	/** Search Index
 	 *
-	 *  takes a string and returns an object with the book position of the terms
+	 *  takes a string and returns an object with an array value
 	 *
 	 * @param {String} terms
 	 * @param {String} filepath
@@ -119,7 +134,6 @@ class Index {
       terms = terms.join(" ");
     }
     let termsArr = Index.removePunctuation(terms);
-    console.log(termsArr);
     if (termsArr.match('^\\s*$')) {
       return false;
     }

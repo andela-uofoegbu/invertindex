@@ -28,12 +28,12 @@ describe('Book Indexer', () => {
     });
   });
 
-
   describe('Read Book data', () => {
     it('should be valid JSON', () => {
       expect(indexInstance.isValidJSON('[{"hello":"false"}]')).toBe(false);
       expect(indexInstance.isValidJSON(JSON.stringify(books))).toEqual(books);
     });
+
     it('should not be empty', () => {
       expect(indexInstance.isValidJSON(JSON.stringify(books)).length).not.toBe(0);
       expect(indexInstance.isValidJSON(JSON.stringify(books)).length).toBe(2);
@@ -66,9 +66,11 @@ describe('Book Indexer', () => {
       expect(indexInstance.searchIndex('lord rabbit man dwarf')).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
       expect(indexInstance.searchIndex('a of elf')).toEqual({ a: [0, 1], of: [0, 1], elf: [1] });
     });
+
     it('should handle array of words as search terms', () => {
       expect(indexInstance.searchIndex(["lord", "rabbit", "man", "dwarf"])).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
     });
+
     it('should handle empty values as search terms', () => {
       expect(indexInstance.searchIndex([])).toEqual(false);
       expect(indexInstance.searchIndex(" ")).toEqual(false);
