@@ -150,6 +150,7 @@ class Index {
 	 *
 	 * @param {String} filename
 	 * @param {Object} files
+   * @returns none
 	 */
 
   createIndex(filename, files) {
