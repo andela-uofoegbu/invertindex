@@ -20,7 +20,7 @@ module.exports = function (config) {
       dir: 'coverage/'
     },
 
-    plugins: ['karma-chrome-launcher', 'karma-coverage', 'karma-jasmine'],
+  //  plugins: ['karma-chrome-launcher', 'karma-coverage', 'karma-jasmine'],
 
 
     // list of files to exclude
@@ -59,9 +59,9 @@ module.exports = function (config) {
 
 
     // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+    // available browser ggit launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['Chrome'],
-    browsers: process.env.TRAVIS ? ['Chrome_travis_ci'] : ['Chrome'],
+    browsers: ['Chrome'],
     // Custom launchers for travis.
     customLaunchers: {
       Chrome_travis_ci: {
