@@ -42,12 +42,12 @@ describe('Book Indexer', () => {
     });
   });
 
-
   describe('Read Book data', () => {
     it('should be valid JSON', () => {
       expect(indexInstance.isValidJSON('[{"hello":"false"}]')).toBe(false);
       expect(indexInstance.isValidJSON(JSON.stringify(books))).toEqual(books);
     });
+
     it('should not be empty', () => {
       expect(indexInstance.isValidJSON(JSON.stringify(books)).length).not.toBe(0);
       expect(indexInstance.isValidJSON(JSON.stringify(books)).length).toBe(2);
@@ -80,9 +80,11 @@ describe('Book Indexer', () => {
       expect(indexInstance.searchIndex('lord rabbit man dwarf')).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
       expect(indexInstance.searchIndex('a of elf')).toEqual({ a: [0, 1], of: [0, 1], elf: [1] });
     });
+
     it('should handle array of words as search terms', () => {
       expect(indexInstance.searchIndex(["lord", "rabbit", "man", "dwarf"])).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
     });
+
     it('should handle empty values as search terms', () => {
       expect(indexInstance.searchIndex([])).toEqual(false);
       expect(indexInstance.searchIndex(" ")).toEqual(false);
@@ -102,6 +104,13 @@ class Index {
     this.files = {};
   }
 
+
+/** convert to Array
+	 * converts string to array
+	 *
+	 * @param {String} data
+	 * @returns {Array} data
+	 */
   static convertToArray(data) {
     return data.toLowerCase().split(' ').sort();
   }
@@ -124,11 +133,11 @@ class Index {
   }
 
 	/** Delete Dupicate
-	 * joins all the strings in all books in a particular file,
-	 * splits into array and removes duplicates
 	 *
-	 * @param {Object} file
-	 * @returns {Array} bookString
+	 * deletes duplicate array elements
+	 *
+	 * @param {Array} bookArray
+	 * @returns {Array} bookArray
 	 */
 
   static deleteDuplicate(bookArray) {
@@ -136,6 +145,13 @@ class Index {
     return bookArray.filter((item, index, arr) => arr.indexOf(item) === index);
   }
 
+/** collateBooks
+	 *
+	 * collates all books in all files into one array
+	 *
+	 * @param {Object} files
+	 * @returns {Array} booksall
+	 */
   static collateBooks(files) {
     let booksall = [];
     for (const filename in files) {
@@ -145,6 +161,7 @@ class Index {
     }
     return booksall;
   }
+
 	/** Create Index
 	 * Creates an index from file(s) uploaded
 	 *
@@ -198,7 +215,7 @@ class Index {
 
 	/** Search Index
 	 *
-	 *  takes a string and returns an object with the book position of the terms
+	 *  takes a string and returns an object with an array value
 	 *
 	 * @param {String} terms
 	 * @param {String} filepath
@@ -212,7 +229,6 @@ class Index {
       terms = terms.join(" ");
     }
     let termsArr = Index.removePunctuation(terms);
-    console.log(termsArr);
     if (termsArr.match('^\\s*$')) {
       return false;
     }
