@@ -20,7 +20,7 @@ module.exports = function (config) {
       dir: 'coverage/'
     },
 
-    plugins: ['karma-coverage'],
+    plugins: ['karma-chrome-launcher', 'karma-coverage', 'karma-jasmine'],
 
 
     // list of files to exclude
