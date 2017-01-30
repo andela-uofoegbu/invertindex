@@ -6,7 +6,7 @@
   "scripts": {
     "send-cov": "coveralls < coverage/lcov.info",
     "start": "node node_modules/gulp/bin/gulp serve",
-    "test": "karma start karma.conf.js --singleRun",
+    "test": "karma start karma.conf.js --singleRun"
   },
   "repository": {
     "type": "git",
