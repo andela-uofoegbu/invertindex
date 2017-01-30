@@ -20,9 +20,7 @@ module.exports = function (config) {
       dir: 'coverage/'
     },
 
-    // plugins: ['karma-coverage', 'karma-coveralls',
-    //   'karma-babel-preprocessor', 'karma-chrome-launcher',
-    //   'karma-jasmine'],
+    // plugins: ['karma-coverage'],
 
 
     // list of files to exclude
@@ -44,7 +42,7 @@ module.exports = function (config) {
 
 
     // web server port
-    port: 9878,
+    port: 9876,
 
 
     // enable / disable colors in the output (reporters and logs)
