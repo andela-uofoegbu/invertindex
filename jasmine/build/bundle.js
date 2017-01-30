@@ -1,27 +1,48 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-const Index = require ("../../src/inverted-index.js");
+module.exports=[
+  {
+    "title": "Alice in Wonderland",
+    "text": "Alice falls into a rabbit hole and enters a world full of imagination."
+  },
+
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring.",
+    "text": "An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring."
+  }
+]
+
+},{}],2:[function(require,module,exports){
+const Index = require("../../src/inverted-index.js");
+
+const books = require("../../books.json");
+
 const indexInstance = new Index();
 
 describe('Book Indexer', () => {
   const filename = "books.json";
-  const books = [
-    {
-      title: 'Alice in Wonderland',
-      text: 'Alice falls into a rabbit hole and enters a world full of imagination.'
-    },
-
-    {
-      title: 'The Lord of the Rings: The Fellowship of the Ring.',
-      text: 'An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring.'
-    }
-  ];
-
-  let refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
+  const refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
 
   indexInstance.files[refinedName] = {};
   indexInstance.files[refinedName]['name'] = filename;
   indexInstance.files[refinedName]['books'] = books;
   indexInstance.createIndex(refinedName);
+  indexInstance.createIndex(null, indexInstance.files);
+
+  describe('Inverted Index class', () => {
+    it('should check that Index class has a createIndex method', () => {
+      expect(typeof Index.prototype.createIndex).toBe('function');
+    });
+
+    it('should check that Index class has a getIndex method', () => {
+      expect(typeof Index.prototype.getIndex).toBe('function');
+    });
+
+    it('should check that Index class has a searchIndex method', () => {
+      expect(typeof Index.prototype.searchIndex).toBe('function');
+    });
+  });
+
+
   describe('Read Book data', () => {
     it('should be valid JSON', () => {
       expect(indexInstance.isValidJSON('[{"hello":"false"}]')).toBe(false);
@@ -34,14 +55,15 @@ describe('Book Indexer', () => {
   });
 
   describe('Populate Index', () => {
-    it('should create index once JSON file has been read', () => {
+    it('should confirm that index is created once JSON file has been read', () => {
       expect(indexInstance.getIndex(refinedName)).not.toBeUndefined();
       expect(indexInstance.getIndex(refinedName).length).not.toBe(0);
       expect(indexInstance.getIndex(refinedName)).toBeDefined();
     });
 
     it('should be correct index', () => {
-      expect(indexInstance.getIndex(refinedName)).toEqual({ a: [0, 1], alice: [0], alliance: [1], an: [1], and: [0, 1], destroy: [1], dwarf: [1], elf: [1], enters: [0], falls: [0], full: [0], hobbit: [1], hole: [0], imagination: [0], into: [0], man: [1], of: [0, 1], powerful: [1], rabbit: [0], ring: [1], seek: [1], to: [1], unusual: [1], wizard: [1], world: [0] });
+      expect(indexInstance.getIndex(refinedName).alice).toEqual([0]);
+      expect(Object.keys(indexInstance.getIndex(refinedName)).length).toBeGreaterThan(0);
       expect(indexInstance.getIndex(refinedName).length).not.toEqual(0);
       expect(indexInstance.getIndex(refinedName)).toBeDefined();
     });
@@ -61,25 +83,27 @@ describe('Book Indexer', () => {
     it('should handle array of words as search terms', () => {
       expect(indexInstance.searchIndex(["lord", "rabbit", "man", "dwarf"])).toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
     });
+    it('should handle empty values as search terms', () => {
+      expect(indexInstance.searchIndex([])).toEqual(false);
+      expect(indexInstance.searchIndex(" ")).toEqual(false);
+    });
   });
 });
 
-},{"../../src/inverted-index.js":2}],2:[function(require,module,exports){
+},{"../../books.json":1,"../../src/inverted-index.js":3}],3:[function(require,module,exports){
+/**
+ * Creates a new Index.
+ * @class
+ */
+
 class Index {
-	/**
-	 * {
-	 * 	file: {
-	 * 		name: 'name of file',
-	 * 		books: <all books for this file>,
-	 * 		index: <index based on the books in this file>
-	 * 	},
-	 * 	allBooks: [],
-	 * 	index: {}
-	 * }
-	 */
 
   constructor() {
     this.files = {};
+  }
+
+  static convertToArray(data) {
+    return data.toLowerCase().split(' ').sort();
   }
 
 	/** Remove Punctuation
@@ -90,11 +114,13 @@ class Index {
 	 */
 
   static removePunctuation(data) {
-    return data.replace(new RegExp("[^A-Z0-9\\s+]", 'gi'), " ").split(" ").filter((item) => {
+    let data1 = data.replace(new RegExp("[^A-Z0-9\\s+]", 'gi'), " ");
+
+    // remove empty array elements
+    data1 = Index.convertToArray(data1);
+    return data1.filter((item) => {
       if (item !== " ") return item;
-    }).join(" ")
-    .toLowerCase()
-    .split(" ");
+    }).join(" ");
   }
 
 	/** Delete Dupicate
@@ -105,51 +131,74 @@ class Index {
 	 * @returns {Array} bookString
 	 */
 
-  static deleteDuplicate(file) {
-    let bookString = "";
-    let books = file.allBooks ? file.allBooks : file.books;
-    for (let i = 0; i < books.length; i++) {
-      bookString += ` ${books[i].text}`;
-    }
-    bookString = Index.removePunctuation(bookString);
-
-    return bookString.filter((item, index, arr) => arr.indexOf(item) === index
-      // test to check for duplicate. If Index of current object is equals to index
-    );
+  static deleteDuplicate(bookArray) {
+    // test to check for duplicate element
+    return bookArray.filter((item, index, arr) => arr.indexOf(item) === index);
   }
 
+  static collateBooks(files) {
+    let booksall = [];
+    for (const filename in files) {
+      if (filename !== 'allBooks' && filename !== 'index') {
+        booksall = booksall.concat(files[filename].books);
+      }
+    }
+    return booksall;
+  }
 	/** Create Index
 	 * Creates an index from file(s) uploaded
 	 *
 	 * @param {String} filename
 	 * @param {Object} files
-   * @returns none
 	 */
 
   createIndex(filename, files) {
-    let file = filename ? this.files[filename] : files;
-    let books = filename ? this.files[filename].books : files.allBooks;
+    let file, books;
+    if (filename) {
+      file = this.files[filename];
+      books = this.files[filename].books;
+    }
+    else {
+      this.files['allBooks'] = Index.collateBooks(files);
+      file = files;
+      books = files.allBooks;
+    }
     const indexObject = {};
-    let wordList = Index.deleteDuplicate(file).sort().join(' ').toLowerCase()
-      .split(' ');
-    for (let i in wordList) {
+
+    let bookString = "";
+
+    // concatenates all book texts
+    if (books !== undefined && books !== null)
+    { for (let i = 0; i < books.length; i++) {
+      bookString += ` ${books[i].text}`;
+    } }
+    bookString = Index.removePunctuation(bookString);
+    let wordList = Index.convertToArray(bookString);
+
+    // assigns all unique words in file to wordlist as array
+    wordList = Index.deleteDuplicate(wordList);
+    // checks all books for existence of each word
+
+    for (const i in wordList) {
       for (let j = 0; j < books.length; j++) {
-        let re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
+        const re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
+        books[j].text = books[j].text.toLowerCase();
         if (re.test(books[j].text)) {
           if (indexObject[wordList[i]]) {
-            indexObject[wordList[i]].push(j); // second looping
+            indexObject[wordList[i]].push(j);
           } else {
-            indexObject[wordList[i]] = [j]; // first time key is added
+            indexObject[wordList[i]] = [j];
           }
         }
       }
     }
+    // create index key in file object and set value to indexObject
     file['index'] = indexObject;
   }
 
 	/** Search Index
 	 *
-	 *  takes a string and returns an object with the book position of the string
+	 *  takes a string and returns an object with the book position of the terms
 	 *
 	 * @param {String} terms
 	 * @param {String} filepath
@@ -159,52 +208,22 @@ class Index {
 	 */
 
   searchIndex(terms, filepath) {
-    let termsArr;
     if (Array.isArray(terms)) {
       terms = terms.join(" ");
     }
-    termsArr = Index.removePunctuation(terms);
-    let subResult = {};
-    if (filepath) {
-      for (let index in termsArr) {
-        if (this.files[filepath].index[termsArr[index]]) {
-          subResult[termsArr[index]] = this.files[filepath].index[termsArr[index]];
-        }
-        else {
-          subResult[termsArr[index]] = [];
-        }
-      }
-      return subResult;
-    }
-    return this.searchAll(terms, this.files);
-  }
-
-	/**
-	 * Search all
-	 *
-	 * If particular file is not selected, it returns search results from all
-	 * files
-	 *
-	 * @param {String} terms
-	 * @returns {Object}
-	 *
-	 *
-	 */
-
-  searchAll(terms) {
     let termsArr = Index.removePunctuation(terms);
-    if (!this.files.index) {
-      this.collateBooks();
+    console.log(termsArr);
+    if (termsArr.match('^\\s*$')) {
+      return false;
     }
-    let allIndex = this.files.index;
-    let subResult = {};
-    for (let index in termsArr) {
-      for (let indexedWord in allIndex) {
-        if (termsArr[index] === indexedWord) {
-          subResult[termsArr[index]] = allIndex[indexedWord];
-        }
+    termsArr = Index.convertToArray(termsArr);
+    const subResult = {};
+    const fileIndex = filepath ? this.files[filepath].index : this.files.index;
+    for (const index in termsArr) {
+      if (fileIndex[termsArr[index]]) {
+        subResult[termsArr[index]] = fileIndex[termsArr[index]];
       }
-      if (!subResult[termsArr[index]]) {
+      else {
         subResult[termsArr[index]] = [];
       }
     }
@@ -213,62 +232,28 @@ class Index {
 
 	/** Get index
 	 *
-	 * takes filename and returns index for that particular file
+	 * takes filename and returns index for a file or all files
 	 *
 	 * @param {String} filename
 	 * @returns {Object}
 	 *
 	 *
 	 */
+
   getIndex(filename) {
-    filename = filename || false;
     if (filename) {
       return this.files[filename].index;
     }
-  }
-
-  /** Get all Books
-     *
-     * sets key with value containing all the books
-     * @returns {Object}
-     *
-     *
-     */
-  getAllBooks() {
-    let booksall = [];
-    for (let filename in this.files) {
-      if (filename !== 'allBooks' && filename !== 'index') {
-        booksall = booksall.concat(this.files[filename].books);
-      }
-    }
-    this.files['allBooks'] = booksall;
-  }
-
-
-
-  collateBooks() {
-    this.getAllBooks();
-    this.createIndex(null, this.files);
-  }
-
-  /** Get all Index
-     *
-     * returns index of all books in all files
-     * @returns {Object}
-     *
-     *
-     */
-  getAllIndex() {
     return this.files.index;
   }
 
-  /** Get all Index
+  /** Is Valid JSON
      *
      * Checks if contents of file uploaded is in the correct JSON
      * format with a title and text property returns true or false
      *
      * @param {String} uploadedFile
-     * @returns {bool}
+     * @returns {bool} isValid
      *
      *
      */
@@ -279,11 +264,12 @@ class Index {
       file = JSON.parse(uploadedFile);
       if (Array.isArray(file)) {
         file.forEach((item) => {
-          if (!item.hasOwnProperty('title') || !item.hasOwnProperty('text')) {
+          if (!item.hasOwnProperty('title') && !item.hasOwnProperty('text')) {
             isValid = false;
           }
         });
-      } else if (!file.hasOwnProperty('title') || !file.hasOwnProperty('text')) {
+      }
+      else if (!file.hasOwnProperty('title') && !file.hasOwnProperty('text')) {
         isValid = false;
       }
     } catch (error) {
@@ -295,4 +281,4 @@ class Index {
 
 module.exports = Index;
 
-},{}]},{},[1])
+},{}]},{},[2])
