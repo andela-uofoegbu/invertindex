@@ -4,7 +4,6 @@
   "description": "",
   "main": "src/inverted-index.js",
   "scripts": {
-    "send-cov": "coveralls < coverage/lcov.info",
     "start": "node node_modules/gulp/bin/gulp serve",
     "test": "karma start karma.conf.js --singleRun"
   },
@@ -52,6 +51,7 @@
     "gulp-browserify": "^0.5.1",
     "gulp-connect": "^5.0.0",
     "gulp-rename": "^1.2.2",
-    "istanbul": "^0.4.5"
+    "istanbul": "^0.4.5",
+    "karma-jasmine": "^1.1.0"
   }
 }
