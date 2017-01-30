@@ -14,8 +14,6 @@ before_install:
  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
  - sudo dpkg -i google-chrome*.deb
 
-before_script:
-    - npm install
 # Send coverage data to Coveralls
 after_script:
     - npm run coveralls
