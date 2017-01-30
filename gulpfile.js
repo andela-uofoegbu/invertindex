@@ -62,4 +62,5 @@ gulp.task('testReload', () => {
     .pipe(connect.reload());
 });
 
-gulp.task('default', ['reloadServer', 'testWatch', 'testReload', 'serve', 'watch']);
+gulp.task('default', ['reloadServer', 'testWatch', 'testReload', 'serve',
+  'watch']);
