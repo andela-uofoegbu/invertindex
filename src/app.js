@@ -112,7 +112,6 @@ searchIndex = (terms) => {
     searchResult = IndexObj.searchIndex(terms);
     books = IndexObj.files.allBooks;
   }
-  console.log(searchResult);
   if (searchResult) {
     const keys = Object.keys(searchResult);
     buildTable(books, searchResult, keys);
@@ -120,11 +119,11 @@ searchIndex = (terms) => {
 };
 
 reset = () => {
-  $('#indexTableDiv').innerHTML = "";
-  $('#fileInput').value = "";
-  $('#fileDisplayArea').innerHTML = "";
-  $('#query').innerHTML = "";
-  $('#dropdown').innerHTML = "";
+  document.getElementById('indexTableDiv').innerHTML = "";
+  document.getElementById('fileInput').value = "";
+  document.getElementById('fileDisplayArea').innerHTML = "";
+  document.getElementById('query').innerHTML = "";
+  document.getElementById('dropdown').innerHTML = "";
   IndexObj.files = {};
 };
 
