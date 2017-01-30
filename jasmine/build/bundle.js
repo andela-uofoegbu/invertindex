@@ -104,7 +104,6 @@ class Index {
     this.files = {};
   }
 
-
 /** convert to Array
 	 * converts string to array
 	 *
@@ -170,33 +169,13 @@ class Index {
 	 */
 
   createIndex(filename, files) {
-    let file, books;
-    if (filename) {
-      file = this.files[filename];
-      books = this.files[filename].books;
-    }
-    else {
-      this.files['allBooks'] = Index.collateBooks(files);
-      file = files;
-      books = files.allBooks;
-    }
+    let file = filename ? this.files[filename] : files;
+    let books = filename ? this.files[filename].books : files.allBooks;
     const indexObject = {};
-
-    let bookString = "";
-
-    // concatenates all book texts
-    if (books !== undefined && books !== null)
-    { for (let i = 0; i < books.length; i++) {
-      bookString += ` ${books[i].text}`;
-    } }
-    bookString = Index.removePunctuation(bookString);
-    let wordList = Index.convertToArray(bookString);
-
-    // assigns all unique words in file to wordlist as array
-    wordList = Index.deleteDuplicate(wordList);
-    // checks all books for existence of each word
-
-    for (const i in wordList) {
+    let wordList = Index.deleteDuplicate(file).sort().join(' ').toLowerCase()
+		.split(' ');
+    wordList.shift();
+    for (let i in wordList) {
       for (let j = 0; j < books.length; j++) {
         const re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
         books[j].text = books[j].text.toLowerCase();
