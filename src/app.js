@@ -3,7 +3,6 @@ const IndexObj = new Index();
 // function to readfiles
 readFiles = (files) => {
   document.getElementById('errorMsg').innerHTML = "";
-  document.getElementById('fileDisplayArea').innerHTML = "";
   const select = $('#dropdown');
   if (!$("#dropdown option[value='']").length > 0) {
     select.append("<option value='' selected >All files</option>");
@@ -121,7 +120,6 @@ searchIndex = (terms) => {
 reset = () => {
   document.getElementById('indexTableDiv').innerHTML = "";
   document.getElementById('fileInput').value = "";
-  document.getElementById('fileDisplayArea').innerHTML = "";
   document.getElementById('query').innerHTML = "";
   document.getElementById('dropdown').innerHTML = "";
   IndexObj.files = {};

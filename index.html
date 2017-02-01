@@ -21,9 +21,17 @@
         </div>
         <hr>
         <div class="sidebarText">
-          <input type="file" id="fileInput" onchange="readFiles(this.files)" multiple>
+          <label for="fileInput" class="btn resetBtn"><i class=""></i>Upload</label>
+          <input type="file" id="fileInput" class="hidden" onchange="readFiles(this.files)" multiple>
 <div id="fileDisplayArea">
+<p>B-Index 1.0 will take JSON file(s) containing book title and text, and produce a list of words indicating which books contain the words</p>
+<h3>How To Use</h3>
 
+<p>Click 'Upload' button to select JSON file(s)<br>
+Click Create Index<br>
+To search for a word, enter a word and click 'Search'<br>
+To clear current files click 'Reset Files'
+</p>
 </div>
 </div>
 <div class="col-md-12">
@@ -31,17 +39,18 @@
 <button class="btn resetBtn" onclick="reset()">Reset Files</button>
 </div>
 <div class="col-md-12">
-<select id="dropdown"></select>
+<select id="dropdown" class="dropdown-toggle btn-secondary"></select>
 </div>
 </div>
 <div class="col-md-8 index-frame-container">
   <input type="text" name="query" id="query" maxlength="50" placeholder="Search Index">
-  <input id="searchBtn" type="submit" value="Find" class="btn" onclick="searchIndex(document.getElementById('query').value)">
+  <input id="searchBtn" type="submit" value="Search" class="btn resetBtn" onclick="searchIndex(document.getElementById('query').value)">
 <div id="index-frame">
   <legend>
     <h2>Index</h2>
   </legend>
   <div id="indexTableDiv">
+
   </div>
 </div>
 </div>
