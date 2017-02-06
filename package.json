@@ -5,7 +5,7 @@
   "main": "src/inverted-index.js",
   "scripts": {
     "coveralls": "istanbul cover jasmine-node --captureExceptions invered-index-test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "start": "node node_modules/gulp/bin/gulp serve",
+    "start": "node node_modules/gulp/bin/gulp",
     "test": "karma start karma.conf.js --singleRun"
   },
   "repository": {
