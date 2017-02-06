@@ -48,6 +48,6 @@
     "gulp": "^3.9.1",
     "coveralls": "^2.11.15",
     "istanbul": "^0.4.5",
-    "karma-jasmine": "^1.1.0",
+    "karma-jasmine": "^1.1.0"
   }
 }
