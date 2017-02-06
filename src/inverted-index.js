@@ -4,195 +4,142 @@
  */
 class Index {
   /**
- * this.files holds all uploaded files
- * @constructor
- */
+   * class constructor
+   * @constructor
+   */
   constructor() {
     this.files = {};
   }
 
-/** convert to Array
-* converts string to array
-*
-* @param {String} data
-* @returns {Array} data
-*/
-  static convertToArray(data) {
-    return data.toLowerCase().split(' ').sort();
+  /** Tokenize
+  * Splits string to a sorted array of words
+  *
+  * @param {String} sentence
+  * @returns {Array} wordlist
+  */
+  static tokenize(sentence) {
+    let words = this.removePunctuation(sentence);
+    words = words.toLowerCase().split(' ').sort();
+    return this.filterWords(words);
   }
 
-/** Remove Punctuation
-* removes punctuation from string and converts to lowercase
-*
-* @param {String} data
-* @returns {String} data1
-*/
-  static removePunctuation(data) {
-    let data1 = data.replace(new RegExp('[^A-Z0-9\\s+]', 'gi'), ' ');
-
-    // remove empty array elements
-    data1 = Index.convertToArray(data1);
-    return data1.filter((item) => {
-      if (item !== ' ') return item;
-    }).join(' ');
+  /** Remove Punctuation
+  * Removes non-alphanumeric characters from string
+  *
+  * @param {String} sentence
+  * @returns {String} containing only alphanumeric characters
+  */
+  static removePunctuation(sentence) {
+    return sentence.replace(/[^\w+\s+]/gi, ' ').replace(/\s+/g, ' ');
   }
 
-/** Delete Dupicate
-*
-* deletes duplicate array elements
-*
-* @param {Array} bookArray
-* @returns {Array} bookArray
-*/
-  static deleteDuplicate(bookArray) {
-    // test to check for duplicate element
-    return bookArray.filter((item, index, arr) => arr.indexOf(item) === index);
+  /** Filter Words
+  *
+  * Removes duplicate array elements and empty arrays
+  *
+  * @param {Array} words
+  * @returns {Array} containing unique words
+  */
+  static filterWords(words) {
+    return words.filter((item, index, list) => list
+      .indexOf(item) === index && item.length > 0);
   }
 
-/** collateBooks
-*
-* collates all books in all files into one array
-*
-* @param {Object} files
-* @returns {Array} booksall
-*/
-  static collateBooks(files) {
-    let booksall = [];
-    for (const filename in files) {
-      if (filename !== 'allBooks' && filename !== 'index') {
-        booksall = booksall.concat(files[filename].books);
-      }
-    }
-    return booksall;
+  /** Get Book Text
+    *
+    * Concatenates text of all books
+    *
+    * @param {Array} books
+    * @returns {String} containing text of all books
+    */
+  static getBookText(books) {
+    return books.map(book => book.text).join(' ');
   }
 
-/** Create Index
-* Creates an index from file(s) uploaded
-*
-* @param {String} filename
-* @param {Object} files
-* @returns {Object} none
-*/
-  createIndex(filename, files) {
-    let file, books;
-    if (filename) {
-      file = this.files[filename];
-      books = this.files[filename].books;
-    } else {
-      this.files.allBooks = Index.collateBooks(files);
-      file = files;
-      books = files.allBooks;
-    }
-    const indexObject = {};
-
-    let bookString = '';
-
-    // concatenates all book texts
-    if (books !== undefined && books !== null) {
-      for (let i = 0; i < books.length; i += 1) {
-        bookString += ` ${books[i].text}`;
-      }
-    }
-    bookString = Index.removePunctuation(bookString);
-    let wordList = Index.convertToArray(bookString);
-
-    // assigns all unique words in file to wordlist as array
-    wordList = Index.deleteDuplicate(wordList);
-    // checks all books for existence of each word
-
-    for (const i in wordList) {
-      for (let j = 0; j < books.length; j += 1) {
-        const re = new RegExp(`\\b${wordList[i]}\\b`, 'i');
-        books[j].text = books[j].text.toLowerCase();
-        if (re.test(books[j].text)) {
-          if (indexObject[wordList[i]]) {
-            indexObject[wordList[i]].push(j);
+  /** Create Index
+  *
+  * Creates Indices for files
+  *
+  * @param {String} fileName
+  * @param {Object} books
+  * @returns {Object} none
+  */
+  createIndex(fileName, books) {
+    const fileIndex = {};
+    const bookText = Index.getBookText(books);
+    const wordList = Index.tokenize(bookText);
+    wordList.forEach((word) => {
+      books.forEach((book, index) => {
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(book.text)) {
+          if (fileIndex[word]) {
+            fileIndex[word].push(index);
           } else {
-            indexObject[wordList[i]] = [j];
+            fileIndex[word] = [index];
           }
         }
-      }
-    }
-    // create index key in file object and set value to indexObject
-    file.index = indexObject;
+      });
+    });
+    this.files[fileName].index = fileIndex;
   }
 
-/** Search Index
-*
-*  takes a string and returns an object with an array value
-*
-* @param {String} terms
-* @param {String} filepath
-* @returns {Object} subResult
-*
-*
-*/
-  searchIndex(terms, filepath) {
-    if (Array.isArray(terms)) {
-      terms = terms.join(' ');
-    }
-    let termsArr = Index.removePunctuation(terms);
-    if (termsArr.match('^\\s*$')) {
+  /** Search Index
+  *
+  *  Searches index of file(s) for given terms
+  *
+  * @param {String} terms
+  * @param {String} filePath
+  * @returns {Object} subSearchResult
+  */
+  searchIndex(terms, filePath) {
+    const searchResult = {};
+    terms = terms.toString();
+    if (Index.removePunctuation(terms).match('^\\s*$')) {
       return false;
     }
-    termsArr = Index.convertToArray(termsArr);
-    const subResult = {};
-    const fileIndex = filepath ? this.files[filepath].index : this.files.index;
-    for (const index in termsArr) {
-      if (fileIndex[termsArr[index]]) {
-        subResult[termsArr[index]] = fileIndex[termsArr[index]];
-      } else {
-        subResult[termsArr[index]] = [];
-      }
-    }
-    return subResult;
+    const wordList = Index.tokenize(terms);
+    const fileKeys = this.files[filePath] ?
+    [filePath] : Object.keys(this.files);
+    fileKeys.forEach((filename) => {
+      const fileIndex = this.files[filename].index;
+      wordList.forEach((word) => {
+        searchResult[word] = fileIndex[word] ? fileIndex[word] : [];
+      });
+    });
+    return searchResult;
   }
 
-/** Get index
-*
-* takes filename and returns index for a file or all files
-*
-* @param {String} filename
-* @returns {Object} this.files.index
-*
-*
-*/
-  getIndex(filename) {
-    if (filename) {
-      return this.files[filename].index;
-    }
-    return this.files.index;
+  /** Get index
+  *
+  * Returns index of file(s)
+  *
+  * @param {String} fileName
+  * @returns {Object} containing index
+  */
+  getIndex(fileName) {
+    return this.files[fileName].index;
   }
 
   /** Is Valid JSON
      *
-     * Checks if contents of file uploaded is in the correct JSON
-     * format with a title and text property returns true or false
+     * Checks if contents of file is a correct JSON object
      *
-     * @param {String} uploadedFile
-     * @returns {bool} isValid
-     *
-     *
+     * @param {Object} uploadedFiles
+     * @returns {Object} file
      */
-  isValidJSON(uploadedFile) {
-    let isValid = true;
-    let file;
+  static isValidJson(uploadedFiles) {
     try {
-      file = JSON.parse(uploadedFile);
-      if (Array.isArray(file)) {
-        file.forEach((item) => {
-          if (!item.hasOwnProperty('title') && !item.hasOwnProperty('text')) {
-            isValid = false;
-          }
-        });
-      } else if (!file.hasOwnProperty('title') && !file.hasOwnProperty('text')) {
-        isValid = false;
-      }
+      const file = JSON.parse(uploadedFiles);
+      file.forEach((item) => {
+        if (!Object.prototype.hasOwnProperty.call(item, 'title')
+          && !Object.prototype.hasOwnProperty.call(item, 'text')) {
+          throw Error;
+        }
+      });
+      return file;
     } catch (error) {
-      throw new Error('JSON file invalid');
+      return false;
     }
-    return isValid ? file : isValid;
   }
 }
-
 module.exports = Index;

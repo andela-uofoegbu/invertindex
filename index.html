@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
   <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="css/style.css" />
 
 </head>
@@ -15,14 +17,23 @@
   <div class="main" ng-controller="MainController">
     <div class="col-md-1"></div>
     <div class="indexer-container col-md-10">
-      <div class="col-md-4 sidebar" id="sidebar">
+      <div class="col-md-3 sidebar" id="sidebar">
         <div class="title">
           <h1>B-Index 1.0</h1>
         </div>
         <hr>
         <div class="sidebarText">
-          <label for="fileInput" class="btn resetBtn"><i class=""></i>Upload</label>
+          <div class="col-md-12">
+            <label for="fileInput" class="btn resetBtn"><i class=""></i>Upload</label>
           <input type="file" id="fileInput" class="hidden" onchange="readFiles(this.files)" multiple>
+          <button class="btn resetBtn" onclick="createIndex()">Create Index</button>
+
+          </div>
+          <div class="col-md-12">
+<select id="dropdown" class="dropdown-toggle btn-secondary resetBtn"></select>
+<button class="btn resetBtn" onclick="reset()">Reset Files</button>
+</div>
+
 <div id="fileDisplayArea">
 <p>B-Index 1.0 will take JSON file(s) containing book title and text, and produce a list of words indicating which books contain the words</p>
 <h3>How To Use</h3>
@@ -34,24 +45,25 @@ To clear current files click 'Reset Files'
 </p>
 </div>
 </div>
-<div class="col-md-12">
-<button class="btn resetBtn" onclick="createIndex()">Create Index</button>
-<button class="btn resetBtn" onclick="reset()">Reset Files</button>
+
 </div>
-<div class="col-md-12">
-<select id="dropdown" class="dropdown-toggle btn-secondary"></select>
-</div>
-</div>
-<div class="col-md-8 index-frame-container">
+<div class="col-md-9 index-frame-container">
+  <div class="col-md-12">
+    <select id="dropdown2" class="dropdown-toggle btn-secondary"></select>
   <input type="text" name="query" id="query" maxlength="50" placeholder="Search Index">
   <input id="searchBtn" type="submit" value="Search" class="btn resetBtn" onclick="searchIndex(document.getElementById('query').value)">
-<div id="index-frame">
-  <legend>
-    <h2>Index</h2>
-  </legend>
-  <div id="indexTableDiv">
-
   </div>
+<div class="col-md-12 frame-all">
+  <div id="index-frame" class="col-md-6">
+    <legend><h3>Index</h3></legend>
+<div id="indexList">
+</div>
+</div>
+<div id="search-frame" class="col-md-6">
+  <legend><h3>Search Results</h3></legend>
+<div id="searchList">
+</div>
+</div>
 </div>
 </div>
 </div>
