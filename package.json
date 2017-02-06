@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/gottsohn/inverted-index#readme",
   "devDependencies": {
+    "babelify": "^7.3.0",
     "browser-sync": "^2.18.6",
     "browserify": "^13.3.0",
     "coveralls": "^2.11.15",
@@ -41,18 +42,12 @@
     "karma-coveralls": "^1.1.2",
     "karma-firefox-launcher": "^1.0.0",
     "karma-istanbul": "0.0.2",
-    "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-verbose-reporter": "0.0.5",
     "watchify": "^3.9.0"
   },
   "dependencies": {
-    "child_process": "^1.0.2",
-    "coveralls": "^2.11.15",
     "gulp": "^3.9.1",
-    "gulp-browserify": "^0.5.1",
-    "gulp-connect": "^5.0.0",
-    "gulp-rename": "^1.2.2",
     "istanbul": "^0.4.5",
     "karma-jasmine": "^1.1.0"
   }
