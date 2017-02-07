@@ -1,6 +1,7 @@
 
-[![Build Status](https://travis-ci.org/andela-uofoegbu/invertindex.svg?branch=restructuring)](https://travis-ci.org/andela-uofoegbu/invertindex)
-[![Coverage Status](https://coveralls.io/repos/github/andela-uofoegbu/invertindex/badge.svg?branch=restructuring)](https://coveralls.io/github/andela-uofoegbu/invertindex?branch=restructuring)
+[![Build Status](https://travis-ci.org/andela-uofoegbu/invertindex.svg?branch=develop)](https://travis-ci.org/andela-uofoegbu/invertindex)
+[![Coverage Status](https://coveralls.io/repos/github/andela-uofoegbu/invertindex/badge.svg?branch=develop)](https://coveralls.io/github/andela-uofoegbu/invertindex?branch=restructuring)
+[![Code Climate](https://codeclimate.com/github/andela-uofoegbu/invertindex/badges/gpa.svg)](https://codeclimate.com/github/andela-uofoegbu/invertindex)
 
 # Inverted-index
 Inverted index object that takes a JSON array of text objects and creates an index from the array. The index allows a user to search for word(s).
