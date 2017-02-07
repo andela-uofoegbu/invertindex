@@ -15,7 +15,7 @@ class Index {
   * Splits string to a sorted array of words
   *
   * @param {String} sentence
-  * @returns {Array} wordlist
+  * @returns {Array} containing unique words
   */
   static tokenize(sentence) {
     let words = this.removePunctuation(sentence);
@@ -30,7 +30,7 @@ class Index {
   * @returns {String} containing only alphanumeric characters
   */
   static removePunctuation(sentence) {
-    return sentence.replace(/[^\w+\s+]/gi, ' ').replace(/\s+/g, ' ');
+    return sentence.replace(/[^\w+\s+]/gi, ' ');
   }
 
   /** Filter Words
@@ -62,7 +62,7 @@ class Index {
   *
   * @param {String} fileName
   * @param {Object} books
-  * @returns {Object} none
+  * @returns {null} stores index of file
   */
   createIndex(fileName, books) {
     const fileIndex = {};
@@ -89,7 +89,7 @@ class Index {
   *
   * @param {String} terms
   * @param {String} filePath
-  * @returns {Object} subSearchResult
+  * @returns {Object} SearchResult
   */
   searchIndex(terms, filePath) {
     const searchResult = {};
@@ -114,7 +114,7 @@ class Index {
   * Returns index of file(s)
   *
   * @param {String} fileName
-  * @returns {Object} containing index
+  * @returns {Object} containing index of file
   */
   getIndex(fileName) {
     return this.files[fileName].index;
@@ -125,7 +125,7 @@ class Index {
      * Checks if contents of file is a correct JSON object
      *
      * @param {Object} uploadedFiles
-     * @returns {Object} file
+     * @returns {Boolean} file contents if valid, returns false if invalid
      */
   static isValidJson(uploadedFiles) {
     try {
