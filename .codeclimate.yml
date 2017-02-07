@@ -18,4 +18,8 @@ engines:
 ratings:
   paths:
   - src/*.js
-exclude_paths: []
+exclude_paths:
+- jasmine/build/bundle.js
+- src/app.js
+- karma.conf.js
+- jasmine/build
