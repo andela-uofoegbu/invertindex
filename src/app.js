@@ -20,7 +20,7 @@ readFiles = (files) => {
         document.getElementById('myModal').style.display = "block";
         document.getElementById('myModal').style.fontWeight = "bold";
         document.getElementById('errorMsg')
-        .innerHTML += `${f.name} failed to upload. Reason? ` + e.message;
+        .innerHTML += `${f.name} failed to upload. Reason? ` + e.message + "<br>";
       }
 
       if (contents) {
