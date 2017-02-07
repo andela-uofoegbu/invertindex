@@ -12,6 +12,8 @@ engines:
     checks:
       Similar code:
         enabled: false
+      Identical code:
+        enabled: false
     config:
       languages:
       - javascript
@@ -23,3 +25,4 @@ exclude_paths:
 - src/app.js
 - karma.conf.js
 - jasmine/build
+- gulpfile.js
