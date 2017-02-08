@@ -146,4 +146,5 @@ class Index {
       return false;
     }
   }
+}
 module.exports = Index;
