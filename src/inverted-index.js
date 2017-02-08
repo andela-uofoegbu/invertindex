@@ -146,5 +146,28 @@ class Index {
       return false;
     }
   }
+
+  /** Add files
+  *
+  * Adds new file(s) to class
+  *
+  * @param {Object} fileContents
+  * @param {Object} fileName
+  * @returns {null} sets Class files
+  */
+  addFiles(fileContents, fileName) {
+    const refinedName = fileName.replace(/\.json/g, '').replace(/\s+/g, '');
+    if (fileContents) {
+      this.files[refinedName] = {};
+      this.files[refinedName].name = fileName;
+      if (Array.isArray(fileContents) && fileContents.length !== 0) {
+          // check if content is an array of objects
+        this.files[refinedName].books = fileContents;
+      } else {
+          // do this if content has just one object
+        this.files[refinedName].books = [fileContents];
+      }
+    }
+  }
 }
 module.exports = Index;
