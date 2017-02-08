@@ -56,6 +56,6 @@ Only files with .json extension can be indexed
 ## Contributions
 
 Clone the repository.
-Install depenencies
+Install dependencies
 Create a new branch for included feature(s) using the keyword feature/ example feature/new-feature.
 Raise a pull request.
