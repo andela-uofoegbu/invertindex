@@ -71,10 +71,20 @@ describe('Book Indexer', () => {
     () => {
       indexInstance.createIndex(refinedName, indexInstance
       .files[refinedName].books);
+      indexInstance.createIndex(refinedName2, indexInstance
+      .files[refinedName2].books);
 
       expect(indexInstance.getIndex(refinedName)).toBeDefined();
       expect(typeof indexInstance.getIndex(refinedName)).toEqual('object');
       expect(indexInstance.getIndex(refinedName).length).not.toBe(0);
+      expect(indexInstance.getIndex(refinedName2))
+      .toEqual({ a: [0, 1],
+        alice: [0],
+        and: [1],
+        bestfriend: [1],
+        girl: [0, 1],
+        her: [1],
+        is: [0] });
     });
 
     it('should be correct index', () => {
