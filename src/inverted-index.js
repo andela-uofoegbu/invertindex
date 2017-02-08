@@ -18,9 +18,9 @@ class Index {
   * @returns {Array} containing unique words
   */
   static tokenize(sentence) {
-    let words = this.removePunctuation(sentence);
-    words = words.toLowerCase().split(' ').sort();
-    return this.filterWords(words);
+    const wordString = this.removePunctuation(sentence);
+    const wordList = wordString.toLowerCase().split(' ').sort();
+    return this.filterWords(wordList);
   }
 
   /** Remove Punctuation
@@ -49,7 +49,7 @@ class Index {
     *
     * Concatenates text of all books
     *
-    * @param {Array} books
+    * @param {Object} books
     * @returns {String} containing text of all books
     */
   static getBookText(books) {
@@ -68,6 +68,8 @@ class Index {
     const fileIndex = {};
     const bookText = Index.getBookText(books);
     const wordList = Index.tokenize(bookText);
+
+  // loops through each book to check for existence of word(s)
     wordList.forEach((word) => {
       books.forEach((book, index) => {
         const regex = new RegExp(`\\b${word}\\b`, 'i');
@@ -101,10 +103,13 @@ class Index {
     const fileKeys = this.files[filePath] ?
     [filePath] : Object.keys(this.files);
     fileKeys.forEach((filename) => {
-      const fileIndex = this.files[filename].index;
-      wordList.forEach((word) => {
-        searchResult[word] = fileIndex[word] ? fileIndex[word] : [];
-      });
+      if (this.files[filename].index) {
+        const fileIndex = this.files[filename].index;
+        searchResult[filename] = {};
+        wordList.forEach((word) => {
+          searchResult[filename][word] = fileIndex[word] ? fileIndex[word] : [];
+        });
+      }
     });
     return searchResult;
   }
