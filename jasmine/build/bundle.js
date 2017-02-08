@@ -12,21 +12,33 @@ module.exports=[
 ]
 
 },{}],2:[function(require,module,exports){
+module.exports=[
+  {
+    "title": "Wonderland Magic",
+    "text": "Alice is a girl"
+  },
+
+  {
+    "title": "The Girl",
+    "text": "A girl and her bestfriend"
+  }
+]
+
+},{}],3:[function(require,module,exports){
 const Index = require('../../src/inverted-index.js');
 
 const books = require('../../books.json');
+const books2 = require('../../books2.json');
 
 const indexInstance = new Index();
 
 describe('Book Indexer', () => {
   const filename = 'books.json';
+  const filename2 = 'books2.json';
   const refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
-
-  indexInstance.files[refinedName] = {};
-  indexInstance.files[refinedName].name = filename;
-  indexInstance.files[refinedName].books = books;
-  indexInstance.createIndex(refinedName, indexInstance.files[refinedName]
-  .books);
+  const refinedName2 = filename2.replace(/\.json/g, '').replace(/\s/g, '');
+  indexInstance.addFiles(books, filename);
+  indexInstance.addFiles(books2, filename2);
 
   describe('Inverted Index class', () => {
     it('should check that Index class has a createIndex method', () => {
@@ -57,12 +69,18 @@ describe('Book Indexer', () => {
   describe('Populate Index', () => {
     it('should confirm that index is created once JSON file has been read',
     () => {
-      expect(indexInstance.getIndex(refinedName)).not.toBeUndefined();
-      expect(indexInstance.getIndex(refinedName).length).not.toBe(0);
+      indexInstance.createIndex(refinedName, indexInstance
+      .files[refinedName].books);
+
       expect(indexInstance.getIndex(refinedName)).toBeDefined();
+      expect(typeof indexInstance.getIndex(refinedName)).toEqual('object');
+      expect(indexInstance.getIndex(refinedName).length).not.toBe(0);
     });
 
     it('should be correct index', () => {
+      indexInstance.createIndex(refinedName2, indexInstance
+      .files[refinedName2].books);
+
       expect(indexInstance.getIndex(refinedName).alice).toEqual([0]);
       expect(Object.keys(indexInstance.getIndex(refinedName)).length)
       .toBeGreaterThan(0);
@@ -74,21 +92,26 @@ describe('Book Indexer', () => {
   describe('Search index', () => {
     it('should return the correct results of the search', () => {
       expect(indexInstance.searchIndex('Alice', refinedName))
-      .toEqual({ alice: [0] });
-      expect(indexInstance.searchIndex('a')).toEqual({ a: [0, 1] });
-      expect(indexInstance.searchIndex('alliance')).toEqual({ alliance: [1] });
+      .toEqual({ books: { alice: [0] } });
+      expect(indexInstance.searchIndex('a'))
+      .toEqual({ books: { a: [0, 1] }, books2: { a: [0, 1] } });
+      expect(indexInstance.searchIndex('alliance'))
+      .toEqual({ books: { alliance: [1] }, books2: { alliance: [] } });
     });
 
     it('should handle a varied number of search terms as arguments', () => {
-      expect(indexInstance.searchIndex('lord rabbit man dwarf'))
-      .toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
-      expect(indexInstance.searchIndex('a of elf'))
-      .toEqual({ a: [0, 1], of: [0, 1], elf: [1] });
+      expect(indexInstance.searchIndex('lord rabbit man dwarf', refinedName))
+      .toEqual({ books: { lord: [], rabbit: [0], man: [1], dwarf: [1] } });
+      expect(indexInstance.searchIndex('a of elf', refinedName))
+      .toEqual({ books: { a: [0, 1], of: [0, 1], elf: [1] } });
+      expect(indexInstance.searchIndex('and', refinedName2))
+      .not.toEqual({ books2: { and: [0] } });
     });
 
     it('should handle array of words as search terms', () => {
-      expect(indexInstance.searchIndex(['lord', 'rabbit', 'man', 'dwarf']))
-      .toEqual({ lord: [], rabbit: [0], man: [1], dwarf: [1] });
+      expect(indexInstance
+      .searchIndex(['lord', [['rabbit']], ['man', 'dwarf']], refinedName))
+      .toEqual({ books: { lord: [], rabbit: [0], man: [1], dwarf: [1] } });
     });
 
     it('should handle empty values as search terms', () => {
@@ -98,7 +121,7 @@ describe('Book Indexer', () => {
   });
 });
 
-},{"../../books.json":1,"../../src/inverted-index.js":3}],3:[function(require,module,exports){
+},{"../../books.json":1,"../../books2.json":2,"../../src/inverted-index.js":4}],4:[function(require,module,exports){
 /**
  * Creates a new Index.
  * @class
@@ -116,12 +139,12 @@ class Index {
   * Splits string to a sorted array of words
   *
   * @param {String} sentence
-  * @returns {Array} wordlist
+  * @returns {Array} containing unique words
   */
   static tokenize(sentence) {
-    let words = this.removePunctuation(sentence);
-    words = words.toLowerCase().split(' ').sort();
-    return this.filterWords(words);
+    const wordString = this.removePunctuation(sentence);
+    const wordList = wordString.toLowerCase().split(' ').sort();
+    return this.filterWords(wordList);
   }
 
   /** Remove Punctuation
@@ -131,7 +154,7 @@ class Index {
   * @returns {String} containing only alphanumeric characters
   */
   static removePunctuation(sentence) {
-    return sentence.replace(/[^\w+\s+]/gi, ' ').replace(/\s+/g, ' ');
+    return sentence.replace(/[^\w+\s+]/gi, ' ');
   }
 
   /** Filter Words
@@ -150,7 +173,7 @@ class Index {
     *
     * Concatenates text of all books
     *
-    * @param {Array} books
+    * @param {Object} books
     * @returns {String} containing text of all books
     */
   static getBookText(books) {
@@ -163,12 +186,14 @@ class Index {
   *
   * @param {String} fileName
   * @param {Object} books
-  * @returns {Object} none
+  * @returns {null} stores index of file
   */
   createIndex(fileName, books) {
     const fileIndex = {};
     const bookText = Index.getBookText(books);
     const wordList = Index.tokenize(bookText);
+
+  // loops through each book to check for existence of word(s)
     wordList.forEach((word) => {
       books.forEach((book, index) => {
         const regex = new RegExp(`\\b${word}\\b`, 'i');
@@ -190,7 +215,7 @@ class Index {
   *
   * @param {String} terms
   * @param {String} filePath
-  * @returns {Object} subSearchResult
+  * @returns {Object} SearchResult
   */
   searchIndex(terms, filePath) {
     const searchResult = {};
@@ -202,10 +227,13 @@ class Index {
     const fileKeys = this.files[filePath] ?
     [filePath] : Object.keys(this.files);
     fileKeys.forEach((filename) => {
-      const fileIndex = this.files[filename].index;
-      wordList.forEach((word) => {
-        searchResult[word] = fileIndex[word] ? fileIndex[word] : [];
-      });
+      if (this.files[filename].index) {
+        const fileIndex = this.files[filename].index;
+        searchResult[filename] = {};
+        wordList.forEach((word) => {
+          searchResult[filename][word] = fileIndex[word] ? fileIndex[word] : [];
+        });
+      }
     });
     return searchResult;
   }
@@ -215,7 +243,7 @@ class Index {
   * Returns index of file(s)
   *
   * @param {String} fileName
-  * @returns {Object} containing index
+  * @returns {Object} containing index of file
   */
   getIndex(fileName) {
     return this.files[fileName].index;
@@ -226,7 +254,7 @@ class Index {
      * Checks if contents of file is a correct JSON object
      *
      * @param {Object} uploadedFiles
-     * @returns {Object} file
+     * @returns {Boolean} file contents if valid, returns false if invalid
      */
   static isValidJson(uploadedFiles) {
     try {
@@ -242,7 +270,29 @@ class Index {
       return false;
     }
   }
+
+  /** Add files
+  *
+  * Adds new file(s) to class
+  *
+  * @param {Object} fileContents
+  * @param {String} fileName
+  * @returns {null} sets Class files
+  */
+  addFiles(fileContents, fileName) {
+    const refinedName = fileName.replace(/\.json/g, '').replace(/\s+/g, '');
+    if (fileContents) {
+      this.files[refinedName] = {};
+      this.files[refinedName].name = fileName;
+      if (Array.isArray(fileContents) && fileContents.length !== 0) {
+          // check if content is an array of books
+        this.files[refinedName].books = fileContents;
+      } else {
+        this.files[refinedName].books = [fileContents];
+      }
+    }
+  }
 }
 module.exports = Index;
 
-},{}]},{},[2])
+},{}]},{},[3])
