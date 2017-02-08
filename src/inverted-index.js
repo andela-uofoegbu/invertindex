@@ -152,7 +152,7 @@ class Index {
   * Adds new file(s) to class
   *
   * @param {Object} fileContents
-  * @param {Object} fileName
+  * @param {String} fileName
   * @returns {null} sets Class files
   */
   addFiles(fileContents, fileName) {
@@ -161,10 +161,9 @@ class Index {
       this.files[refinedName] = {};
       this.files[refinedName].name = fileName;
       if (Array.isArray(fileContents) && fileContents.length !== 0) {
-          // check if content is an array of objects
+          // check if content is an array of books
         this.files[refinedName].books = fileContents;
       } else {
-          // do this if content has just one object
         this.files[refinedName].books = [fileContents];
       }
     }
