@@ -28,16 +28,17 @@ module.exports=[
 const Index = require('../../src/inverted-index.js');
 
 const books = require('../../books.json');
+const books2 = require('../../books2.json');
 
 const indexInstance = new Index();
 
 describe('Book Indexer', () => {
   const filename = 'books.json';
+  const filename2 = 'books2.json';
   const refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
-
-  this.files[refinedName] = {};
-  this.files[refinedName].name = filename;
-  this.files[refinedName].books = books;
+  const refinedName2 = filename2.replace(/\.json/g, '').replace(/\s/g, '');
+  indexInstance.addFiles(books, filename);
+  indexInstance.addFiles(books2, filename2);
 
   describe('Inverted Index class', () => {
     it('should check that Index class has a createIndex method', () => {
@@ -77,6 +78,9 @@ describe('Book Indexer', () => {
     });
 
     it('should be correct index', () => {
+      indexInstance.createIndex(refinedName2, indexInstance
+      .files[refinedName2].books);
+
       expect(indexInstance.getIndex(refinedName).alice).toEqual([0]);
       expect(Object.keys(indexInstance.getIndex(refinedName)).length)
       .toBeGreaterThan(0);
@@ -90,9 +94,9 @@ describe('Book Indexer', () => {
       expect(indexInstance.searchIndex('Alice', refinedName))
       .toEqual({ books: { alice: [0] } });
       expect(indexInstance.searchIndex('a'))
-      .toEqual({ books: { a: [0, 1] } });
+      .toEqual({ books: { a: [0, 1] }, books2: { a: [0, 1] } });
       expect(indexInstance.searchIndex('alliance'))
-      .toEqual({ books: { alliance: [1] } });
+      .toEqual({ books: { alliance: [1] }, books2: { alliance: [] } });
     });
 
     it('should handle a varied number of search terms as arguments', () => {
@@ -100,6 +104,8 @@ describe('Book Indexer', () => {
       .toEqual({ books: { lord: [], rabbit: [0], man: [1], dwarf: [1] } });
       expect(indexInstance.searchIndex('a of elf', refinedName))
       .toEqual({ books: { a: [0, 1], of: [0, 1], elf: [1] } });
+      expect(indexInstance.searchIndex('and', refinedName2))
+      .not.toEqual({ books2: { and: [0] } });
     });
 
     it('should handle array of words as search terms', () => {
@@ -114,6 +120,7 @@ describe('Book Indexer', () => {
     });
   });
 });
+
 },{"../../books.json":1,"../../books2.json":2,"../../src/inverted-index.js":4}],4:[function(require,module,exports){
 /**
  * Creates a new Index.
@@ -261,6 +268,28 @@ class Index {
       return file;
     } catch (error) {
       return false;
+    }
+  }
+
+  /** Add files
+  *
+  * Adds new file(s) to class
+  *
+  * @param {Object} fileContents
+  * @param {String} fileName
+  * @returns {null} sets Class files
+  */
+  addFiles(fileContents, fileName) {
+    const refinedName = fileName.replace(/\.json/g, '').replace(/\s+/g, '');
+    if (fileContents) {
+      this.files[refinedName] = {};
+      this.files[refinedName].name = fileName;
+      if (Array.isArray(fileContents) && fileContents.length !== 0) {
+          // check if content is an array of books
+        this.files[refinedName].books = fileContents;
+      } else {
+        this.files[refinedName].books = [fileContents];
+      }
     }
   }
 }
