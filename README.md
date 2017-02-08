@@ -6,6 +6,26 @@
 # Inverted-index
 Inverted index object that takes a JSON array of text objects and creates an index from the array. The index allows a user to search for word(s).
 
+## Features
+
+* Upload a JSON file in the format
+```
+[
+  {
+    "title": "Alice in Wonderland",
+    "text": "Alice falls into a rabbit hole and enters a world full of imagination."
+  },
+
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring.",
+    "text": "An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring."
+  }
+]
+```
+* Application allow for multiple file uploads
+* Create index of the words in the json file
+* Search indexed words
+
 ## Usage
 
 * Clone the repository git clone https://github.com/andela-uofoegbu/invertindex.git
@@ -18,7 +38,7 @@ Inverted index object that takes a JSON array of text objects and creates an ind
 
 ## Technologies and Services
 
-## Written in Javascript es6 syntax and nodejs on the backend, with the following:
+### Written in Javascript es6 syntax and nodejs on the backend, with the following:
 
 * Jasmine
 * Gulp
@@ -28,3 +48,14 @@ Inverted index object that takes a JSON array of text objects and creates an ind
 * Coveralls
 * Hound CI
 * HTML/CSS
+
+## Limitations
+
+Only files with .json extension can be indexed
+
+## Contributions
+
+Clone the repository.
+Install depenencies
+Create a new branch for included feature(s) using the keyword feature/ example feature/new-feature.
+Raise a pull request.
