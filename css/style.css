@@ -8,7 +8,8 @@
 
 .btn {
   background: #dee2e8;
-  font-weight: bold; }
+  font-weight: bold;
+  margin-bottom:10px;}
 
 .container {
   background: #eee;
@@ -32,35 +33,39 @@ body {
   background: linear-gradient(to right, #20c6d5 0%, #20c6d5 2%, #178ede 100%); }
 
 .indexer-container {
-  background: #4c4c4c;
-  background: -moz-linear-gradient(left, #4c4c4c 0%, #474747 0%, #666666 0%, #2c2c2c 0%, #2b2b2b 7%, black 51%, #111111 60%, #131313 88%, #1c1c1c 100%);
-  background: -webkit-gradient(left top, right top, color-stop(0%, #4c4c4c), color-stop(0%, #474747), color-stop(0%, #666666), color-stop(0%, #2c2c2c), color-stop(7%, #2b2b2b), color-stop(51%, black), color-stop(60%, #111111), color-stop(88%, #131313), color-stop(100%, #1c1c1c));
-  background: -webkit-linear-gradient(left, #4c4c4c 0%, #474747 0%, #666666 0%, #2c2c2c 0%, #2b2b2b 7%, black 51%, #111111 60%, #131313 88%, #1c1c1c 100%);
-  background: -o-linear-gradient(left, #4c4c4c 0%, #474747 0%, #666666 0%, #2c2c2c 0%, #2b2b2b 7%, black 51%, #111111 60%, #131313 88%, #1c1c1c 100%);
-  background: -ms-linear-gradient(left, #4c4c4c 0%, #474747 0%, #666666 0%, #2c2c2c 0%, #2b2b2b 7%, black 51%, #111111 60%, #131313 88%, #1c1c1c 100%);
-  background: linear-gradient(to right, #4c4c4c 0%, #474747 0%, #666666 0%, #2c2c2c 0%, #2b2b2b 7%, black 51%, #111111 60%, #131313 88%, #1c1c1c 100%);
-  height: auto;
+  background: white;
+  min-height: 640px;
   margin: 0 auto;
-  box-shadow: 4px 4px 5px dimgray;
+
   font-family: sans-serif;
   margin-top: 40px;
-  padding: 30px; }
+  padding: 30px;
+  width:100%;
+  color:black !important;}
 
 .title {
   font-weight: bold;
-  color: white; }
+  color:midnightblue;
+  font-family:"Arial Black", Gadget, sans-serif;}
 
 .sidebar {
-  height: auto; }
+  height: auto;}
 
 .sidebar fieldset {
   color: white; }
 
 #index-frame {
-  background: white;
-  width: 100%;
+  background: ghostwhite;
+
   margin: 0 auto;
-  min-height: 400px; }
+  min-height: 400px;
+  }
+
+  #search-frame {
+  background: ghostwhite;
+  margin: 0 auto;
+  min-height: 400px;
+}
 
 #uploadbutton {
   color: black; }
@@ -74,24 +79,35 @@ legend {
   color: white; }
 
 #fileDisplayArea {
-  height: 300px;
-  width: 100%; }
+  height: 270px;
+  width: 80%;
+  background: white;
+  margin:10px 0px 10px 0px;
+  color: black;
+  padding:20px;
+  font-family: Arial, Helvetica, sans-serif;}
+
+  #fileDisplayArea p {
+  color: black;
+  text-align: justify}
 
 .resetBtn:hover {
-  background: cadetblue;
-  color: white; }
+  background: transparent;
+  color: midnightblue;
+  box-shadow: inset 0 0 10px skyblue; }
 
 .sidebarText {
   color: white; }
 
 .index-frame-container {
-  margin-top: 30px; }
+  margin-top: 30px;
+  height: auto;}
 
 .createindexbutton {
   color: black; }
 
 #query {
-  width: 79%;
+  width: 66%;
   display: inline-block;
   margin: 00px 0px 10px 0px;
   height: 35px;
@@ -105,10 +121,134 @@ legend {
   vertical-align: top; }
 
 #indexTableDiv {
-  margin-top: -30px; }
+
+  height:400px;
+  background: whitesmoke;
+  padding:9px;}
 
 .tick {
   color: green; }
 
 .crossout {
   color: red; }
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background: #1292a8;
+  background: #20c6d5;
+  background: -moz-linear-gradient(left, #20c6d5 0%, #20c6d5 2%, #178ede 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, #20c6d5), color-stop(2%, #20c6d5), color-stop(100%, #178ede));
+  background: -webkit-linear-gradient(left, #20c6d5 0%, #20c6d5 2%, #178ede 100%);
+  background: -o-linear-gradient(left, #20c6d5 0%, #20c6d5 2%, #178ede 100%);
+  background: -ms-linear-gradient(left, #20c6d5 0%, #20c6d5 2%, #178ede 100%);
+  background: linear-gradient(to right, #20c6d5 0%, #20c6d5 2%, #178ede 100%);
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;
+min-height:100px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #333;
+    color: white;
+}
+
+.btn{
+  background: #20c6d5;
+  color: white
+}
+
+#dropdown{
+  width:82px;
+  color: black;
+  height: 34px;
+  vertical-align: top;
+}
+
+#dropdown2{
+  width:82px;
+  color: black;
+  height: 34px;
+  vertical-align: top;
+}
+th{
+  max-width:150px;
+text-align:center
+}
+
+td{
+  text-align: center;
+}
+#toggleindex{
+  width:100%;
+  height:auto;
+  padding:0px !important;
+}
+
+
+.outercontain{
+max-height:300px !important;
+overflow-y: scroll !important;
+}
+
+
+
+.frame-all{
+  background: ghostwhite;
+}

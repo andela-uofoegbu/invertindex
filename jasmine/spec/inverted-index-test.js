@@ -1,62 +1,89 @@
+const Index = require('../../src/inverted-index.js');
 
-// const Index = require("../../src/inverted-index.js");
-const books = [
-  {
-    title: 'Alice in Wonderland',
-    text: 'Alice falls into a rabbit hole and enters a world full of imagination.'
-  },
+const books = require('../../books.json');
 
-  {
-    title: 'The Lord of the Rings: The Fellowship of the Ring.',
-    text: 'An unusual alliance of man, elf, dwarf, wizard and hobbit seek to destroy a powerful ring.'
-  }
-];
+const indexInstance = new Index();
 
 describe('Book Indexer', () => {
-  const indexInstance = new Index ();
+  const filename = 'books.json';
+  const refinedName = filename.replace(/\.json/g, '').replace(/\s/g, '');
 
-  for (const index in books) {
-    indexInstance.allBooks.push(books[index]);
-  }
+  this.files[refinedName] = {};
+  this.files[refinedName].name = filename;
+  this.files[refinedName].books = books;
 
-  indexInstance.createIndex();
+  describe('Inverted Index class', () => {
+    it('should check that Index class has a createIndex method', () => {
+      expect(typeof Index.prototype.createIndex).toBe('function');
+    });
+
+    it('should check that Index class has a getIndex method', () => {
+      expect(typeof Index.prototype.getIndex).toBe('function');
+    });
+
+    it('should check that Index class has a searchIndex method', () => {
+      expect(typeof Index.prototype.searchIndex).toBe('function');
+    });
+  });
 
   describe('Read Book data', () => {
     it('should be valid JSON', () => {
-      expect(indexInstance.isValidJSON("hello")).toBe(false);
-      expect(indexInstance.isValidJSON(books)).toBe(true);
+      expect(Index.isValidJson('[{"hello":"false"}]')).toBe(false);
+      expect(Index.isValidJson(JSON.stringify(books))).toEqual(books);
     });
+
     it('should not be empty', () => {
-      expect(indexInstance.indexObject).not.toBe({});
-      expect(indexInstance.indexObject.length).not.toBe(0);
+      expect(Index.isValidJson(JSON.stringify(books)).length).not.toBe(0);
+      expect(Index.isValidJson(JSON.stringify(books)).length).toBe(2);
     });
   });
 
   describe('Populate Index', () => {
-    it('should create index once JSON file has been read', () => {
-      expect(indexInstance.getIndex()).not.toBeUndefined();
-      expect(indexInstance.getIndex().length).not.toBe(0);
-      expect(indexInstance.getIndex()).toBeDefined();
+    it('should confirm that index is created once JSON file has been read',
+    () => {
+      indexInstance.createIndex(refinedName, indexInstance
+      .files[refinedName].books);
+
+      expect(indexInstance.getIndex(refinedName)).toBeDefined();
+      expect(typeof indexInstance.getIndex(refinedName)).toEqual('object');
+      expect(indexInstance.getIndex(refinedName).length).not.toBe(0);
     });
 
     it('should be correct index', () => {
-      expect(indexInstance.getIndex()).toEqual({ a: [ 0, 1 ], alice: [ 0 ], alliance: [ 1 ], an: [ 0, 1 ], and: [ 0, 1 ], destroy: [ 1 ], dwarf: [ 1 ], elf: [ 1 ], enters: [ 0 ], falls: [ 0 ], full: [ 0 ], hobbit: [ 1 ], hole: [ 0 ], imagination: [ 0 ], into: [ 0 ], man: [ 1 ], of: [ 0, 1 ], powerful: [ 1 ], rabbit: [ 0 ], ring: [ 1 ], seek: [ 1 ], to: [ 0, 1 ], unusual: [ 1 ], wizard: [ 1 ], world: [ 0 ] });
-      expect(indexInstance.getIndex().length).not.toEqual(0);
-      expect(indexInstance.getIndex()).toBeDefined();
+      expect(indexInstance.getIndex(refinedName).alice).toEqual([0]);
+      expect(Object.keys(indexInstance.getIndex(refinedName)).length)
+      .toBeGreaterThan(0);
+      expect(indexInstance.getIndex(refinedName).length).not.toEqual(0);
+      expect(indexInstance.getIndex(refinedName)).toBeDefined();
     });
   });
 
   describe('Search index', () => {
     it('should return the correct results of the search', () => {
-      expect(indexInstance.searchIndex('Alice')).toEqual({ alice: [0] });
-      expect(indexInstance.searchIndex('a')).toEqual({ a: [0, 1] });
-      expect(indexInstance.searchIndex('alliance')).toEqual({ alliance: [1] });
+      expect(indexInstance.searchIndex('Alice', refinedName))
+      .toEqual({ books: { alice: [0] } });
+      expect(indexInstance.searchIndex('a'))
+      .toEqual({ books: { a: [0, 1] } });
+      expect(indexInstance.searchIndex('alliance'))
+      .toEqual({ books: { alliance: [1] } });
     });
 
     it('should handle a varied number of search terms as arguments', () => {
-      // expect(indexInstance.searchIndex('lord', 'rabbit', 'man', 'dwarf')).toEqual([[1], [0], [1], [1]]);
-      // expect(indexInstance.searchIndex('a', 'of', 'elf')).toEqual([[0, 1], [0, 1], [1]]);
-      // expect(indexInstance.searchIndex('unusual', 'into', 'ifeanyi', 'hobbit')).toEqual([[1], [0], 'Word not found', [1]]);
+      expect(indexInstance.searchIndex('lord rabbit man dwarf', refinedName))
+      .toEqual({ books: { lord: [], rabbit: [0], man: [1], dwarf: [1] } });
+      expect(indexInstance.searchIndex('a of elf', refinedName))
+      .toEqual({ books: { a: [0, 1], of: [0, 1], elf: [1] } });
+    });
+
+    it('should handle array of words as search terms', () => {
+      expect(indexInstance
+      .searchIndex(['lord', [['rabbit']], ['man', 'dwarf']], refinedName))
+      .toEqual({ books: { lord: [], rabbit: [0], man: [1], dwarf: [1] } });
+    });
+
+    it('should handle empty values as search terms', () => {
+      expect(indexInstance.searchIndex([])).toEqual(false);
+      expect(indexInstance.searchIndex(' ')).toEqual(false);
     });
   });
 });

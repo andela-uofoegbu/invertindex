@@ -1,2 +1,5 @@
-jasmine
+jasmine/build/bundle.js
 src/app.js
+karma.conf.js
+jasmine/build
+jasmine/lib
