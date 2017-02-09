@@ -21,7 +21,16 @@ readFiles = (files) => {
         document.getElementById('errorMsg')
           .innerHTML += `${f.name} failed to upload. Reason? ${e.message}<br>`;
       }
-      IndexObj.addFiles(contents, f.name);
+      if (contents) {
+          Index.files[refinedName] = {};
+          Index.files[refinedName].name = f.name;
+          if (Array.isArray(contents) && contents.length !== 0) {
+          // check if content is an array of books
+            Index.files[refinedName].books = contents;
+          } else {
+            Index.files[refinedName].books = [contents];
+          }
+        }
       select.append(`<option selected value='${refinedName}'>${IndexObj
         .files[refinedName].name}</option>`);
     };
