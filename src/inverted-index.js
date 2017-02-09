@@ -18,9 +18,9 @@ class Index {
   * @returns {Array} containing unique words
   */
   static tokenize(sentence) {
-    const wordString = this.removePunctuation(sentence);
-    const wordList = wordString.toLowerCase().split(' ').sort();
-    return this.filterWords(wordList);
+    const words = this.removePunctuation(sentence);
+    words = words.toLowerCase().split(' ').sort();
+    return this.filterWords(words);
   }
 
   /** Remove Punctuation
